@@ -951,8 +951,12 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
         // How about exposing sub based API like TelephonyManager.getDataEnabled(long subId);
         if (mCurrentTab.startsWith(TAB_SIM)) {
             // as per SUB, return the individual flag
-            return android.provider.Settings.Global.getInt(getActivity().getContentResolver(),
-                    android.provider.Settings.Global.MOBILE_DATA + multiSimGetCurrentSub(), 0) != 0;
+            if(getSimStateFromSlotId(multiSimGetCurrentSub()) == SIM_STATE_READY) {
+                return android.provider.Settings.Global.getInt(getActivity().getContentResolver(),
+                   android.provider.Settings.Global.MOBILE_DATA + multiSimGetCurrentSub(), 0) != 0;
+            } else {
+                return false;
+            }
         }
 
         if (mMobileDataEnabled != null) {
@@ -1137,7 +1141,8 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
 
             final boolean dataEnabled = !mDataEnabled.isChecked();
             final String currentTab = mCurrentTab;
-            if (TAB_MOBILE.equals(currentTab) || currentTab.startsWith(TAB_SIM)) {
+            if ((TAB_MOBILE.equals(currentTab) || currentTab.startsWith(TAB_SIM))
+                   && getSimStateFromSlotId(multiSimGetCurrentSub()) == SIM_STATE_READY) {
                 if (dataEnabled) {
                     setMobileDataEnabled(true);
                 } else {
@@ -2583,5 +2588,12 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
 
         // only as a default support, should not be hit.
         return 0;
+    }
+
+    //Get SIM state from slotId
+    private int getSimStateFromSlotId(int slotId) {
+        final Context context = getActivity();
+        final TelephonyManager tele = TelephonyManager.from(context);
+        return tele.getSimState(slotId);
     }
 }
