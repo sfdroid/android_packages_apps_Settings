@@ -16,6 +16,7 @@
 
 package com.android.settings;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -426,9 +427,14 @@ public class TrustedCredentialsSettings extends Fragment {
                     int max = 0;
                     int progress = 0;
                     for (int i = 0; i < n; ++i) {
+                        Activity settingActivity = getActivity();
+                        if(settingActivity == null) {
+                            cancel(true);
+                            return null;
+                        }
                         UserHandle profile = profiles.get(i);
                         int profileId = profile.getIdentifier();
-                        KeyChainConnection keyChainConnection = KeyChain.bindAsUser(getActivity(),
+                        KeyChainConnection keyChainConnection = KeyChain.bindAsUser(settingActivity,
                                 profile);
                         // Saving the connection for later use on the certificate dialog.
                         mKeyChainConnectionByProfileId.put(profileId, keyChainConnection);
@@ -438,6 +444,10 @@ public class TrustedCredentialsSettings extends Fragment {
                         aliasesByProfileId.put(profileId, aliases);
                     }
                     for (int i = 0; i < n; ++i) {
+                        if(getActivity() == null) {
+                            cancel(true);
+                            return null;
+                        }
                         UserHandle profile = profiles.get(i);
                         int profileId = profile.getIdentifier();
                         List<ParcelableString> aliases = aliasesByProfileId.get(profileId);
