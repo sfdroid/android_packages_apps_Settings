@@ -32,6 +32,11 @@
                 android:targetClass="com.android.settings.SetFullBackupPassword" />
     </PreferenceScreen>
 
+     <CheckBoxPreference
+        android:key="crashlytics_opt_in"
+        android:title="@string/crashlytics_opt_in"
+        android:summary="@string/crashlytics_opt_in_summary"/>
+
     <CheckBoxPreference
         android:key="keep_screen_on"
         android:title="@string/keep_screen_on"

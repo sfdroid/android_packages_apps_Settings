@@ -3475,6 +3475,10 @@
     <string name="bugreport_in_power">Bug report shortcut</string>
     <!-- [CHAR LIMIT=NONE] Setting checkbox summary for Whether to include bug report item in power -->
     <string name="bugreport_in_power_summary">Show a button in the power menu for taking a bug report</string>
+    <!-- Setting Checkbox title whether to report crash details through Crashlytics -->
+    <string name="crashlytics_opt_in">Report crashes</string>
+    <!-- Setting Checkbox summary whether to report crash details through Crashlytics -->
+    <string name="crashlytics_opt_in_summary">Allow anonymous crash reports</string>
     <!-- Setting Checkbox title whether to keep the screen on when plugged in to a power source -->
     <string name="keep_screen_on">Stay awake</string>
     <!-- setting Checkbox summary whether to keep the screen on when plugged in  -->
@@ -6108,4 +6112,7 @@
     <string name="external_storage_turn_on">External storage has been turned on</string>
     <string name="external_storage_turn_off">External storage has been turned off</string>
     <string name="switch_data_subscription">Data services are now switched to SIM%1$s.</string>
+
+   <!-- Title for encryption dialog that disables TalkBack. [CHAR_LIMIT=25] -->
+   <string name="changes_restart_dialog">Please restart for changes to take effect</string>
 </resources>
