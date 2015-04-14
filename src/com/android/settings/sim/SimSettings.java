@@ -135,6 +135,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 new IntentFilter(TelephonyIntents.ACTION_DEFAULT_DATA_SUBSCRIPTION_CHANGED);
         intentFilter.addAction(TelephonyIntents.ACTION_SUBINFO_CONTENT_CHANGE);
         intentFilter.addAction(TelephonyIntents.ACTION_SUBINFO_RECORD_UPDATED);
+        intentFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
 
         getActivity().registerReceiver(mDdsSwitchReceiver, intentFilter);
     }
@@ -187,6 +188,8 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 }
                 // Refresh UI whenever subinfo record gets changed
                 updateAllOptions();
+            } else if(Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
+                updateSimEnablers();
             }
         }
     };
