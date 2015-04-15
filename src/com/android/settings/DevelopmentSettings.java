@@ -94,6 +94,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private static final String ENABLE_ADB = "enable_adb";
     private static final String CLEAR_ADB_KEYS = "clear_adb_keys";
     private static final String ENABLE_TERMINAL = "enable_terminal";
+    private static final String CRASHLYTICS_OPT_IN = "crashlytics_opt_in";
     private static final String KEEP_SCREEN_ON = "keep_screen_on";
     private static final String BT_HCI_SNOOP_LOG = "bt_hci_snoop_log";
     private static final String ENABLE_OEM_UNLOCK = "oem_unlock_enable";
@@ -183,6 +184,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private Preference mClearAdbKeys;
     private CheckBoxPreference mEnableTerminal;
     private Preference mBugreport;
+    private CheckBoxPreference mCrashlyticsOptIn;
     private CheckBoxPreference mBugreportInPower;
     private CheckBoxPreference mKeepScreenOn;
     private CheckBoxPreference mBtHciSnoopLog;
@@ -289,6 +291,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         }
 
         mBugreport = findPreference(BUGREPORT);
+        mCrashlyticsOptIn = findAndInitCheckboxPref(CRASHLYTICS_OPT_IN);
         mBugreportInPower = findAndInitCheckboxPref(BUGREPORT_IN_POWER_KEY);
         mKeepScreenOn = findAndInitCheckboxPref(KEEP_SCREEN_ON);
         mBtHciSnoopLog = findAndInitCheckboxPref(BT_HCI_SNOOP_LOG);
@@ -510,6 +513,8 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
                     context.getPackageManager().getApplicationEnabledSetting(TERMINAL_APP_PACKAGE)
                     == PackageManager.COMPONENT_ENABLED_STATE_ENABLED);
         }
+        updateCheckBox(mCrashlyticsOptIn, Settings.Global.getInt(cr,
+                CRASHLYTICS_OPT_IN, 0) != 0);
         updateCheckBox(mBugreportInPower, Settings.Secure.getInt(cr,
                 Settings.Secure.BUGREPORT_IN_POWER_MENU, 0) != 0);
         updateCheckBox(mKeepScreenOn, Settings.Global.getInt(cr,
@@ -1370,6 +1375,15 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             Settings.Secure.putInt(getActivity().getContentResolver(),
                     Settings.Secure.BUGREPORT_IN_POWER_MENU,
                     mBugreportInPower.isChecked() ? 1 : 0);
+        } else if (preference == mCrashlyticsOptIn) {
+            Settings.Global.putInt(getActivity().getContentResolver(),
+                    CRASHLYTICS_OPT_IN,
+                    mCrashlyticsOptIn.isChecked() ? 1 : 0);
+            new AlertDialog.Builder(getActivity())
+                .setMessage(R.string.changes_restart_dialog)
+                .setCancelable(false).setPositiveButton(android.R.string.ok, null)
+                .create()
+                .show();
         } else if (preference == mKeepScreenOn) {
             Settings.Global.putInt(getActivity().getContentResolver(),
                     Settings.Global.STAY_ON_WHILE_PLUGGED_IN,
