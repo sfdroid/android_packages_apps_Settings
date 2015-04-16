@@ -19,8 +19,10 @@ package com.android.settings.accessibility;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.ActivityManagerNative;
 import android.app.admin.DevicePolicyManager;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
@@ -290,6 +292,8 @@ public class AccessibilitySettings extends SettingsPreferenceFragment implements
         try {
             mCurConfig.fontScale = mToggleLargeTextPreference.isChecked() ? LARGE_FONT_SCALE : 1;
             ActivityManagerNative.getDefault().updatePersistentConfiguration(mCurConfig);
+            Intent intent = new Intent("ACCESSBILITY.FONT.SIZE.CHANGE");
+            getActivity().sendBroadcast(intent);
         } catch (RemoteException re) {
             /* ignore */
         }
