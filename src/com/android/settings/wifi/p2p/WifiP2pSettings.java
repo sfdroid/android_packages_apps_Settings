@@ -285,6 +285,7 @@ public class WifiP2pSettings extends SettingsPreferenceFragment
         };
 
         setHasOptionsMenu(true);
+        getActivity().getActionBar().setTitle(R.string.wifi_menu_p2p);
 
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         preferenceScreen.removeAll();
@@ -594,6 +595,7 @@ public class WifiP2pSettings extends SettingsPreferenceFragment
     }
 
     private void updateDevicePref() {
+        Log.d("saixu", "updateDevicePref:" +mThisDevice);
         if (mThisDevice != null) {
             if (TextUtils.isEmpty(mThisDevice.deviceName)) {
                 mThisDevicePref.setTitle(mThisDevice.deviceAddress);
