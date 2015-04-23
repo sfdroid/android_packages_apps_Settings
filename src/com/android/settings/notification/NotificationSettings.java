@@ -17,6 +17,7 @@
 package com.android.settings.notification;
 
 import android.content.ContentResolver;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
@@ -31,6 +32,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Vibrator;
+import android.os.UserHandle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceCategory;
@@ -118,7 +120,11 @@ public class NotificationSettings extends SettingsPreferenceFragment implements 
                     initVolumePreference(KEY_NOTIFICATION_VOLUME, AudioManager.STREAM_NOTIFICATION);
             sound.removePreference(sound.findPreference(KEY_RING_VOLUME));
         }
-        initRingtones(sound);
+        if(UserHandle.myUserId() == UserHandle.USER_OWNER) {
+            initRingtones(sound);
+        } else {
+            unInitRingtones(sound);
+        }
         initVibrateWhenRinging(sound);
 
         final PreferenceCategory notification = (PreferenceCategory)
@@ -196,12 +202,27 @@ public class NotificationSettings extends SettingsPreferenceFragment implements 
     // === Phone & notification ringtone ===
 
     private void initRingtones(PreferenceCategory root) {
+        Log.d(TAG, "initRingtones");
         mPhoneRingtonePreference = root.findPreference(KEY_PHONE_RINGTONE);
         if (mPhoneRingtonePreference != null && !mVoiceCapable) {
             root.removePreference(mPhoneRingtonePreference);
             mPhoneRingtonePreference = null;
         }
         mNotificationRingtonePreference = root.findPreference(KEY_NOTIFICATION_RINGTONE);
+    }
+
+    private void unInitRingtones(PreferenceCategory root) {
+        Log.d(TAG, "unInitRingtones");
+        mPhoneRingtonePreference = root.findPreference(KEY_PHONE_RINGTONE);
+        if (mPhoneRingtonePreference != null) {
+            mPhoneRingtonePreference.setEnabled(false);
+            mPhoneRingtonePreference.setShouldDisableView(false);
+        }
+        mNotificationRingtonePreference = root.findPreference(KEY_NOTIFICATION_RINGTONE);
+        if (mNotificationRingtonePreference != null) {
+            mNotificationRingtonePreference.setEnabled(false);
+            mNotificationRingtonePreference.setShouldDisableView(false);
+        }
     }
 
     private void lookupRingtoneNames() {
@@ -473,10 +494,12 @@ public class NotificationSettings extends SettingsPreferenceFragment implements 
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPDATE_PHONE_RINGTONE:
-                    mPhoneRingtonePreference.setSummary((CharSequence) msg.obj);
+                    if(mPhoneRingtonePreference != null)
+                        mPhoneRingtonePreference.setSummary((CharSequence) msg.obj);
                     break;
                 case UPDATE_NOTIFICATION_RINGTONE:
-                    mNotificationRingtonePreference.setSummary((CharSequence) msg.obj);
+                    if(mNotificationRingtonePreference != null)
+                        mNotificationRingtonePreference.setSummary((CharSequence) msg.obj);
                     break;
                 case STOP_SAMPLE:
                     mVolumeCallback.stopSample();
