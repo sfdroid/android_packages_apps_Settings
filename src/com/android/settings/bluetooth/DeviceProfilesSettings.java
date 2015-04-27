@@ -158,7 +158,7 @@ public final class DeviceProfilesSettings extends SettingsPreferenceFragment
 
         final int pbapPermission = mCachedDevice.getPhonebookPermissionChoice();
         Log.d(TAG, "addPreferencesForProfiles: pbapPermission = " + pbapPermission);
-        if (pbapPermission == CachedBluetoothDevice.PBAP_CONNECT_RECEIVED) {
+        if (pbapPermission != CachedBluetoothDevice.ACCESS_UNKNOWN) {
             final PbapServerProfile psp = mManager.getProfileManager().getPbapProfile();
             CheckBoxPreference pbapPref = createProfilePreference(psp);
             mProfileContainer.addPreference(pbapPref);

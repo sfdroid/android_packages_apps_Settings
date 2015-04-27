@@ -266,7 +266,7 @@ public class WirelessSettings extends SettingsPreferenceFragment
 
         final Activity activity = getActivity();
         mAirplaneModePreference = (SwitchPreference) findPreference(KEY_TOGGLE_AIRPLANE);
-        SwitchPreference nfc = (SwitchPreference) findPreference(KEY_TOGGLE_NFC);
+        //SwitchPreference nfc = (SwitchPreference) findPreference(KEY_TOGGLE_NFC);
 
         if (TelephonyManager.getDefault().getPhoneCount() > 1) {
             // Mobile Networks menu will traverse to Select Subscription menu.
@@ -288,7 +288,7 @@ public class WirelessSettings extends SettingsPreferenceFragment
         SwitchPreference nsd = (SwitchPreference) findPreference(KEY_TOGGLE_NSD);
 
         mAirplaneModeEnabler = new AirplaneModeEnabler(activity, mAirplaneModePreference);
-        mNfcEnabler = new NfcEnabler(activity, nfc, androidBeam);
+        //mNfcEnabler = new NfcEnabler(activity, nfc, androidBeam);
 
         mSmsApplicationPreference = (AppListPreference) findPreference(KEY_SMS_APPLICATION);
         // Restricted users cannot currently read/write SMS.
@@ -343,12 +343,12 @@ public class WirelessSettings extends SettingsPreferenceFragment
         }
 
         // Remove NFC if not available
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(activity);
+        /*mNfcAdapter = NfcAdapter.getDefaultAdapter(activity);
         if (mNfcAdapter == null) {
             getPreferenceScreen().removePreference(nfc);
             getPreferenceScreen().removePreference(androidBeam);
             mNfcEnabler = null;
-        }
+        }*/
 
         // Remove Mobile Network Settings and Manage Mobile Plan for secondary users,
         // if it's a wifi-only device, or if the settings are restricted.
@@ -434,9 +434,9 @@ public class WirelessSettings extends SettingsPreferenceFragment
         super.onResume();
 
         mAirplaneModeEnabler.resume();
-        if (mNfcEnabler != null) {
+        /*if (mNfcEnabler != null) {
             mNfcEnabler.resume();
-        }
+        }*/
         if (mNsdEnabler != null) {
             mNsdEnabler.resume();
         }
@@ -456,9 +456,9 @@ public class WirelessSettings extends SettingsPreferenceFragment
         super.onPause();
 
         mAirplaneModeEnabler.pause();
-        if (mNfcEnabler != null) {
+        /*if (mNfcEnabler != null) {
             mNfcEnabler.pause();
-        }
+        }*/
         if (mNsdEnabler != null) {
             mNsdEnabler.pause();
         }

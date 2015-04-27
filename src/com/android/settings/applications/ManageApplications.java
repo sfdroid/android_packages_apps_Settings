@@ -78,6 +78,7 @@ import com.android.settings.applications.ApplicationsState.AppEntry;
 import com.android.settings.deviceinfo.StorageMeasurement;
 import com.android.settings.Utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -351,10 +352,12 @@ public class ManageApplications extends Fragment implements
             if (mFilter == FILTER_APPS_SDCARD) {
                 if (mContainerService != null) {
                     try {
-                        final long[] stats = mContainerService.getFileSystemStats(
-                                Environment.getSecondaryStorageDirectory().getPath());
-                        mTotalStorage = stats[0];
-                        mFreeStorage = stats[1];
+                        File dir = Environment.getSecondaryStorageDirectory();
+                        if(dir != null) {
+                            final long[] stats = mContainerService.getFileSystemStats(dir.getPath());
+                            mTotalStorage = stats[0];
+                            mFreeStorage = stats[1];
+                        }
                     } catch (RemoteException e) {
                         Log.w(TAG, "Problem in container service", e);
                     }

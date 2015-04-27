@@ -116,7 +116,7 @@ public class MultiSimEnablerPreference extends Preference implements OnCheckedCh
 
     public MultiSimEnablerPreference(Context context, SubscriptionInfo sir, Handler handler,
             int slotId) {
-        this(context, null, com.android.internal.R.attr.checkBoxPreferenceStyle);
+        this(context, null, 0);
         logd("Contructor..Enter" + sir);
         mSlotId = slotId;
         mSir = sir;

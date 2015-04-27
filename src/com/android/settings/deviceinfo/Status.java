@@ -288,6 +288,7 @@ public class Status extends PreferenceActivity {
                 (!isMultiSimEnabled())) {
             mPhone = PhoneFactory.getDefaultPhone();
         }
+
         // Note - missing in zaku build, be careful later...
         mSignalStrength = findPreference(KEY_SIGNAL_STRENGTH);
         mUptime = findPreference("up_time");
@@ -400,6 +401,10 @@ public class Status extends PreferenceActivity {
                 }
             });
 
+        if(UserHandle.myUserId() != UserHandle.USER_OWNER &&
+                (isMultiSimEnabled())) {
+            removePreferenceFromScreen(BUTTON_SELECT_SUB_KEY);
+        }
         PreferenceScreen selectSub = (PreferenceScreen) findPreference(BUTTON_SELECT_SUB_KEY);
         if (selectSub != null) {
             Intent intent = selectSub.getIntent();
