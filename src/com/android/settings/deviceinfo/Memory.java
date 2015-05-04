@@ -126,8 +126,9 @@ public class Memory extends SettingsPreferenceFragment implements Indexable {
 
                     continue;
                 }
-
-                addCategory(StorageVolumePreferenceCategory.buildForPhysical(context, volume));
+                if (!volume.getState().equals(Environment.MEDIA_REMOVED)) {
+                    addCategory(StorageVolumePreferenceCategory.buildForPhysical(context, volume));
+                }
             }
         }
 
