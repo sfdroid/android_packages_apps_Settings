@@ -158,9 +158,20 @@ public class AddAccountSettings extends Activity {
         if (authorities != null) {
             intent.putExtra(AccountPreferenceBase.AUTHORITIES_FILTER_KEY, authorities);
         }
-        if (accountTypes != null) {
-            intent.putExtra(AccountPreferenceBase.ACCOUNT_TYPES_FILTER_KEY, accountTypes);
+        String[] tmpaccountTypes = null;
+        if (accountTypes == null) {
+            tmpaccountTypes = new String[]{"com.android.sim","com.qualcomm.RIDL","com.android.localphone"};
+        } else if (accountTypes != null) {
+            int length = accountTypes.length;
+            tmpaccountTypes = new String[length+3];
+            for (int i=0; i<accountTypes.length; i++) {
+                tmpaccountTypes[i] = accountTypes[i];
+            }
+            tmpaccountTypes[length] = "com.android.sim";
+            tmpaccountTypes[length+1] = "com.qualcomm.RIDL";
+            tmpaccountTypes[length+2] = "com.android.localphone";
         }
+        intent.putExtra(AccountPreferenceBase.ACCOUNT_TYPES_FILTER_KEY, tmpaccountTypes);
         intent.putExtra(EXTRA_USER, mUserHandle);
         startActivityForResult(intent, CHOOSE_ACCOUNT_REQUEST);
     }

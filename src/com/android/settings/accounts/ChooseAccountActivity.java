@@ -144,7 +144,7 @@ public class ChooseAccountActivity extends PreferenceActivity {
                 }
             }
             if (addAccountPref && mAccountTypesFilter != null
-                    && !mAccountTypesFilter.contains(accountType)) {
+                    && mAccountTypesFilter.contains(accountType)) {
                 addAccountPref = false;
             }
             if (addAccountPref) {
