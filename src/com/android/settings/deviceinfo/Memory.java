@@ -126,9 +126,8 @@ public class Memory extends SettingsPreferenceFragment implements Indexable {
 
                     continue;
                 }
-                if (!volume.getState().equals(Environment.MEDIA_REMOVED)) {
-                    addCategory(StorageVolumePreferenceCategory.buildForPhysical(context, volume));
-                }
+                if (volume.getPath().contains("usbotg")) continue;
+                addCategory(StorageVolumePreferenceCategory.buildForPhysical(context, volume));
             }
         }
 

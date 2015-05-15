@@ -226,9 +226,7 @@ public class StorageVolumePreferenceCategory extends PreferenceCategory {
             mMountTogglePreference.setTitle(titleResId);
             mMountTogglePreference.setSummary(summaryResId);
 
-            if (!mVolume.getState().equals(Environment.MEDIA_REMOVED)) {
-                addPreference(mMountTogglePreference);
-            }
+            addPreference(mMountTogglePreference);
         }
 
         final boolean allowFormat = mVolume != null;
@@ -252,9 +250,7 @@ public class StorageVolumePreferenceCategory extends PreferenceCategory {
             mFormatPreference.setTitle(titleResId);
             mFormatPreference.setSummary(summaryResId);
 
-            if (!mVolume.getState().equals(Environment.MEDIA_REMOVED)) {
-                addPreference(mFormatPreference);
-            }
+            addPreference(mFormatPreference);
         }
 
         final IPackageManager pm = ActivityThread.getPackageManager();
