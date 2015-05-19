@@ -339,6 +339,7 @@ public final class BluetoothPairingDialog extends AlertActivity implements
     }
 
     private void onPair(String value) {
+        mDevice.setPhonebookAccessPermission(CachedBluetoothDevice.ACCESS_ALLOWED);
         switch (mType) {
             case BluetoothDevice.PAIRING_VARIANT_PIN:
                 byte[] pinBytes = BluetoothDevice.convertPinToBytes(value);
