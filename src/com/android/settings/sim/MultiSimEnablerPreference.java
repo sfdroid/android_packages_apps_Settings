@@ -158,13 +158,12 @@ public class MultiSimEnablerPreference extends Preference implements OnCheckedCh
         setEnabled(isSubValid);
 
         logd("update() isSubValid "  + isSubValid);
+        if (mSubTitle != null) {
+            mSubTitle.setText(res.getString(R.string.sim_card_number_title, mSlotId + 1));
+        }
         if (isSubValid) {
-            updateTitle();
             updateSummary();
         } else {
-            if (mSubTitle != null) {
-                mSubTitle.setText(res.getString(R.string.sim_card_number_title, mSlotId + 1));
-            }
             if (mSubSummary != null) {
                 mSubSummary.setText(R.string.sim_slot_empty);
             }

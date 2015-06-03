@@ -23,7 +23,7 @@ import android.content.SharedPreferences;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
-
+import com.android.settings.R;
 import com.android.settings.Utils;
 
 
@@ -49,8 +49,9 @@ public class ProfileUpdateReceiver extends BroadcastReceiver {
         int userId = UserHandle.myUserId();
         UserManager um = (UserManager) context.getSystemService(Context.USER_SERVICE);
         String profileName = Utils.getMeProfileName(context, false /* partial name */);
-        if (profileName != null && profileName.length() > 0) {
-            um.setUserName(userId, profileName);
+        if ((profileName == null || profileName.length() <= 0) && userId != UserHandle.USER_OWNER) {
+            profileName = context.getResources().getString(R.string.user_new_user_name);
         }
+        um.setUserName(userId, profileName);
     }
 }
