@@ -596,7 +596,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             carrierView.setText(mSubscriptionInfo.getCarrierName());
 
              builder.setTitle(String.format(res.getString(R.string.sim_editor_title),
-                    (mSlotId)));
+                    (mSlotId + 1)));
 
             builder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
                 @Override
