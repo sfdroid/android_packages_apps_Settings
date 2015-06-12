@@ -136,11 +136,7 @@ public class NotificationSettings extends SettingsPreferenceFragment implements 
                             com.android.internal.R.drawable.ic_audio_ring_notif_mute);
             sound.removePreference(sound.findPreference(KEY_RING_VOLUME));
         }
-        if(UserHandle.myUserId() == UserHandle.USER_OWNER) {
-            initRingtones(sound);
-        } else {
-            unInitRingtones(sound);
-        }
+        initRingtones(sound);
         initVibrateWhenRinging(sound);
 
         final PreferenceCategory notification = (PreferenceCategory)
@@ -272,20 +268,6 @@ public class NotificationSettings extends SettingsPreferenceFragment implements 
             mPhoneRingtonePreference = null;
         }
         mNotificationRingtonePreference = root.findPreference(KEY_NOTIFICATION_RINGTONE);
-    }
-
-    private void unInitRingtones(PreferenceCategory root) {
-        Log.d(TAG, "unInitRingtones");
-        mPhoneRingtonePreference = root.findPreference(KEY_PHONE_RINGTONE);
-        if (mPhoneRingtonePreference != null) {
-            mPhoneRingtonePreference.setEnabled(false);
-            mPhoneRingtonePreference.setShouldDisableView(false);
-        }
-        mNotificationRingtonePreference = root.findPreference(KEY_NOTIFICATION_RINGTONE);
-        if (mNotificationRingtonePreference != null) {
-            mNotificationRingtonePreference.setEnabled(false);
-            mNotificationRingtonePreference.setShouldDisableView(false);
-        }
     }
 
     private void lookupRingtoneNames() {
