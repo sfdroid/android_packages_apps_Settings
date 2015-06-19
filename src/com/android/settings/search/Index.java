@@ -1171,6 +1171,7 @@ public class Index {
             final boolean forceUpdate = params[0].forceUpdate;
 
             final SQLiteDatabase database = getWritableDatabase();
+            if(database == null) return null;
             final String localeStr = Locale.getDefault().toString();
 
             try {
