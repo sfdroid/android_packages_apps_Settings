@@ -74,6 +74,9 @@ public class SelectSubscription extends  TabActivity {
         Intent intent =  getIntent();
         String pkg = intent.getStringExtra(PACKAGE);
         String targetClass = intent.getStringExtra(TARGET_CLASS);
+        if (pkg == null || pkg.length() <= 0 || targetClass == null || targetClass.length() <= 0) {
+            return;
+        }
 
         int numPhones = TelephonyManager.getDefault().getPhoneCount();
 
