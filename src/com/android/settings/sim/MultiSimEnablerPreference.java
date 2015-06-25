@@ -283,14 +283,7 @@ public class MultiSimEnablerPreference extends Preference implements OnCheckedCh
         }
 
         if (!mCurrentState) {
-            if (getActivatedSubInfoCount(mContext) > 1) {
-                logd("More than one sub is active, Deactivation possible.");
-                showAlertDialog(CONFIRM_ALERT_DLG_ID, 0);
-            } else {
-                logd("Only one sub is active. Deactivation not possible.");
-                showAlertDialog(ERROR_ALERT_DLG_ID, R.string.sim_enabler_both_inactive);
-                return;
-            }
+            showAlertDialog(CONFIRM_ALERT_DLG_ID, 0);
         } else {
             logd("Activate the sub");
             sendSubConfigurationRequest();
