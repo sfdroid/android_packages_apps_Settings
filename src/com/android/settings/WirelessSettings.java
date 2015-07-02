@@ -245,6 +245,16 @@ public class WirelessSettings extends SettingsPreferenceFragment
         return mTm.isSmsCapable();
     }
 
+    private boolean hasSimCard() {
+        int count = TelephonyManager.getDefault().getPhoneCount();
+        for (int i = 0; i < count; i++) {
+            if (TelephonyManager.getDefault().hasIccCard(i)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -268,11 +278,9 @@ public class WirelessSettings extends SettingsPreferenceFragment
         mAirplaneModePreference = (SwitchPreference) findPreference(KEY_TOGGLE_AIRPLANE);
         //SwitchPreference nfc = (SwitchPreference) findPreference(KEY_TOGGLE_NFC);
 
+        PreferenceScreen manageSub = (PreferenceScreen) findPreference(KEY_MOBILE_NETWORK_SETTINGS);
         if (TelephonyManager.getDefault().getPhoneCount() > 1) {
             // Mobile Networks menu will traverse to Select Subscription menu.
-            PreferenceScreen manageSub =
-                    (PreferenceScreen) findPreference(KEY_MOBILE_NETWORK_SETTINGS);
-
             if (manageSub != null) {
                 Intent intent = manageSub.getIntent();
                 intent.setClassName("com.android.phone",
@@ -282,6 +290,11 @@ public class WirelessSettings extends SettingsPreferenceFragment
                 intent.putExtra(SelectSubscription.TARGET_CLASS,
                                 "com.android.phone.MSimMobileNetworkSubSettings");
             }
+        }
+
+        if (!hasSimCard()) {
+            manageSub.setDependency(null);
+            manageSub.setEnabled(false);
         }
 
         PreferenceScreen androidBeam = (PreferenceScreen) findPreference(KEY_ANDROID_BEAM_SETTINGS);
