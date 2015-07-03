@@ -562,13 +562,22 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             update();
         }
 
+        private boolean hasCard() {
+            return TelephonyManager.getDefault().hasIccCard(mSlotId);
+        }
+
         public void update() {
             final Resources res = getResources();
 
             setTitle(res.getString(R.string.sim_card_number_title, mSlotId + 1));
             if (mSubscriptionInfo != null) {
-                setSummary(res.getString(R.string.sim_settings_summary,
+                if (hasCard()) {
+                   setSummary(res.getString(R.string.sim_settings_summary,
                             mSubscriptionInfo.getDisplayName(), mSubscriptionInfo.getNumber()));
+                } else {
+                  setSummary(res.getString(R.string.sim_settings_summary,
+                            mSubscriptionInfo.getDisplayName(), null));
+                }
                 setEnabled(true);
             } else {
                 setSummary(R.string.sim_slot_empty);
