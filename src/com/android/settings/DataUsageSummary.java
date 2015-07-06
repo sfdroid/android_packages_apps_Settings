@@ -752,7 +752,7 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
 
         if (LOGD) Log.d(TAG, "updateBody() with currentTab=" + currentTab);
 
-        mDataEnabledSupported = isOwner;
+        mDataEnabledSupported = true;
         mDisableAtLimitSupported = true;
 
         // TODO: remove mobile tabs when SIM isn't ready
