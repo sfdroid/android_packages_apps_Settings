@@ -84,6 +84,7 @@ public class Memory extends SettingsPreferenceFragment implements Indexable {
     private IMountService mMountService;
     private StorageManager mStorageManager;
     private UsbManager mUsbManager;
+    private boolean mIsUsbConnected = false;
 
     private ArrayList<StorageVolumePreferenceCategory> mCategories = Lists.newArrayList();
 
@@ -208,6 +209,9 @@ public class Memory extends SettingsPreferenceFragment implements Indexable {
         boolean usbItemVisible = !isMassStorageEnabled()
                 && !um.hasUserRestriction(UserManager.DISALLOW_USB_FILE_TRANSFER);
         usb.setVisible(usbItemVisible);
+        if (!mIsUsbConnected) {
+            usb.setEnabled(false);
+        }
     }
 
     @Override
@@ -286,6 +290,7 @@ public class Memory extends SettingsPreferenceFragment implements Indexable {
             String action = intent.getAction();
             if (action.equals(UsbManager.ACTION_USB_STATE)) {
                boolean isUsbConnected = intent.getBooleanExtra(UsbManager.USB_CONNECTED, false);
+               mIsUsbConnected = isUsbConnected;
                String usbFunction = mUsbManager.getDefaultFunction();
                for (StorageVolumePreferenceCategory category : mCategories) {
                    category.onUsbStateChanged(isUsbConnected, usbFunction);
