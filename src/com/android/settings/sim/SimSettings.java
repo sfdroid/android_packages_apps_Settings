@@ -327,6 +327,10 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         if (sir != null) {
             simPref.setSelectedValue(sir, false);
         }
+        if (subId == 0) {
+            final SubscriptionInfo sir1 = findRecordBySubId(1);
+            simPref.setSelectedValue(sir1, false);
+        }
         simPref.setEnabled(mNumSims > 1);
     }
 
