@@ -614,18 +614,34 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
                     String displayName = nameText.getText().toString();
                     int subId = mSubscriptionInfo.getSubscriptionId();
-                    mSubscriptionInfo.setDisplayName(displayName);
-                    mSubscriptionManager.setDisplayName(
-                            displayName,
-                            subId,
-                            SubscriptionManager.NAME_SOURCE_USER_INPUT);
-                    SubscriptionInfo subInfo = findRecordBySubId(subId);
-                    if (subInfo != null) {
-                        subInfo.setDisplayName(displayName);
-                    }
+                    if (TextUtils.isEmpty(displayName.trim())) {
+                        mSubscriptionInfo.setDisplayName("CARD " + (subId -1));
+                        mSubscriptionManager.setDisplayName(
+                                "CARD " + (subId -1),
+                                subId,
+                                SubscriptionManager.NAME_SOURCE_USER_INPUT);
+                        SubscriptionInfo subInfo = findRecordBySubId(subId);
+                        if (subInfo != null) {
+                            subInfo.setDisplayName(displayName);
+                        }
+                        updateAllOptions();
+                        update();
+                        Toast.makeText(getActivity(), "Please enter valid SIM name",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        mSubscriptionInfo.setDisplayName(displayName);
+                        mSubscriptionManager.setDisplayName(
+                                displayName,
+                                subId,
+                                SubscriptionManager.NAME_SOURCE_USER_INPUT);
+                        SubscriptionInfo subInfo = findRecordBySubId(subId);
+                        if (subInfo != null) {
+                            subInfo.setDisplayName(displayName);
+                        }
 
-                    updateAllOptions();
-                    update();
+                        updateAllOptions();
+                        update();
+                    }
                 }
             });
 
