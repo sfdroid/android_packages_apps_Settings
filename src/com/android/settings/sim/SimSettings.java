@@ -131,6 +131,17 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         mPhoneStateListener = new PhoneStateListener[mPhoneCount];
         listen();
 
+        // Add for Setting Default DataSubId, SmsSubId and VoiceSubId, When there is only one SIM card inserted.
+        if (hasNumIccCard() == 1) {
+            for (int i = 0; i < mPhoneCount; i++) {
+                if (tm.hasIccCard(i)) {
+                    mSubscriptionManager.setDefaultDataSubId((i + 1));
+                    mSubscriptionManager.setDefaultSmsSubId((i + 1));
+                    mSubscriptionManager.setDefaultVoiceSubId((i + 1));
+                }
+            }
+        }
+
         mPreferredDataSubscription = mSubscriptionManager.getDefaultDataSubId();
 
         createPreferences();
@@ -331,7 +342,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             final SubscriptionInfo sir1 = findRecordBySubId(1);
             simPref.setSelectedValue(sir1, false);
         }
-        simPref.setEnabled(mNumSims > 1);
+        simPref.setEnabled(hasNumIccCard() > 1);
     }
 
     private void updateCellularDataValues() {
@@ -347,7 +358,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         final DropDownPreference simPref = (DropDownPreference) findPreference(KEY_CELLULAR_DATA);
         boolean callStateIdle = isCallStateIdle();
         // Enable data preference in msim mode and call state idle
-        simPref.setEnabled((mNumSims > 1) && callStateIdle);
+        simPref.setEnabled((hasNumIccCard() > 1) && callStateIdle);
         // Display toast only once when the user enters the activity even though the call moves
         // through multiple call states (eg - ringing to offhook for incoming calls)
         if (callStateIdle == false && inActivity && dataDisableToastDisplayed == false) {
@@ -380,7 +391,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         if (sir != null) {
             simPref.setSelectedValue(sir, false);
         }
-        simPref.setEnabled(mNumSims > 1);
+        simPref.setEnabled(hasNumIccCard() > 1);
     }
 
     @Override
@@ -707,5 +718,24 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
     private void loge(String s) {
         Log.e(TAG, s);
+    }
+
+    // Add the function Which can count the num of IccCard.
+    private int hasNumIccCard() {
+        if (getActivity() != null) {
+            TelephonyManager tm =
+                    (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            if (tm != null) {
+                int phoneCount = tm.getPhoneCount();
+                int mRealNumSimCard = 0;
+                for (int i = 0; i < phoneCount; i++) {
+                    if (tm.hasIccCard(i)) {
+                        mRealNumSimCard ++;
+                    }
+                }
+                return mRealNumSimCard;
+            }
+        }
+        return -1;
     }
 }
