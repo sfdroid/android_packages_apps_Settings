@@ -629,18 +629,12 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
                     String displayName = nameText.getText().toString();
                     int subId = mSubscriptionInfo.getSubscriptionId();
-                    if (TextUtils.isEmpty(displayName.trim())) {
-                        mSubscriptionInfo.setDisplayName("CARD " + (subId -1));
-                        mSubscriptionManager.setDisplayName(
-                                "CARD " + (subId -1),
-                                subId,
-                                SubscriptionManager.NAME_SOURCE_USER_INPUT);
-                        SubscriptionInfo subInfo = findRecordBySubId(subId);
-                        if (subInfo != null) {
-                            subInfo.setDisplayName(displayName);
-                        }
-                        updateAllOptions();
-                        update();
+                    SubscriptionInfo subInfoSim1Name = findRecordBySubId(1);
+                    SubscriptionInfo subInfoSim2Name = findRecordBySubId(2);
+
+                    if (TextUtils.isEmpty(displayName.trim())
+                            || displayName.equals(subInfoSim1Name.getDisplayName())
+                            || displayName.equals(subInfoSim2Name.getDisplayName())) {
                         Toast.makeText(getActivity(), "Please enter valid SIM name",
                                 Toast.LENGTH_SHORT).show();
                     } else {
