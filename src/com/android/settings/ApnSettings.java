@@ -360,6 +360,12 @@ public class ApnSettings extends SettingsPreferenceFragment implements
 
         mRestoreApnProcessHandler
                 .sendEmptyMessage(EVENT_RESTORE_DEFAULTAPN_START);
+        mRestoreApnProcessHandler.postDelayed(new Runnable() {
+            @Override
+            public void run(){
+                removeDialog(DIALOG_RESTORE_DEFAULTAPN);
+            }
+        }, 3500);
         return true;
     }
 
