@@ -72,6 +72,8 @@ public class SelectSubscription extends  TabActivity {
         TabHost tabHost = getTabHost();
 
         Intent intent =  getIntent();
+        intent.putExtra(PACKAGE, "com.android.settings");
+        intent.putExtra(TARGET_CLASS, "com.android.settings.deviceinfo.MSimSubscriptionStatus");
         String pkg = intent.getStringExtra(PACKAGE);
         String targetClass = intent.getStringExtra(TARGET_CLASS);
         if (pkg == null || pkg.length() <= 0 || targetClass == null || targetClass.length() <= 0) {
