@@ -106,8 +106,11 @@ public class SimBootReceiver extends BroadcastReceiver {
                 notificationSent = true;
             }
         }
-
-        if (notificationSent) {
+        /*when only one SIM card inserted or activated, there is no Preferred SIM option.
+            DefaultDataSubId/DefaultSmsSubId/DefaultVoiceSubId will be setted
+            as the inserted card automatically.
+            so no need to show the PREFERRED_PICK dialog*/
+        /*if (notificationSent) {
             Intent intent = new Intent(mContext, SimDialogActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if (numSIMsDetected == 1) {
@@ -117,7 +120,7 @@ public class SimBootReceiver extends BroadcastReceiver {
                 intent.putExtra(SimDialogActivity.DIALOG_TYPE_KEY, SimDialogActivity.DATA_PICK);
             }
             mContext.startActivity(intent);
-        }
+        }*/
     }
 
     private int getLastSubId(String strSlotId) {

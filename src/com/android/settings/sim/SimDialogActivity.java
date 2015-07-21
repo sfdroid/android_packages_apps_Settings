@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2014 The Android Open Source Project
  *
@@ -98,11 +99,52 @@ public class SimDialogActivity extends Activity {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
                     final int subId = sir.getSubscriptionId();
+                    int simSlotIndex = 0;
+                    List<SubscriptionInfo> mSubInfoList = null;
+                    final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+                    /*Author:zhaoliyuan
+                        Date:2015.07.21
+                        Cause:
+                        The SubscriptionId of the two SIM cards changes all the time,
+                        and we have not found the root cause,maybe it is Qualcomm's bug;
+                        Interface SubscriptionManager.getActiveSubscriptionInfoList() returns incorrect Subscriptioninfo,
+                        etc:SubscriptionInfo.mStatus is ACTIVE when SIM Empty;
+
+                        Effect:
+                        The  establishment  of Preferred SIM card options  depend on the SubscriptionId,
+                        so the Preferred SIM card options (Data,Call,SMS) are in a mess.
+                        Sometimes it changes when reboot,or the preferred option don't display.
+
+                        Solution:
+                        setDefaultDataSubId(final Context context, final int subId)
+                        setDefaultSmsSubId(final Context context, final int subId)
+                        setDefaultCallSubId(final Context context, final int subId)
+                        When invoking these three functions anywhere in the project
+                        (etc.framework/opt/telephony ,packages/services/Telephony,packages/services/Telecomm),
+                        the input parameter "subId"  actually is  the SlotId .
+                        Ask Every Time:                SubId =0;
+                        card1:               SlotId = 0,SubId =1;
+                        card2:               SlotId = 1,SubId =2;
+                        */
+                    if (mSubInfoList == null) {
+                        mSubInfoList = subscriptionManager.getActiveSubscriptionInfoList();
+                    }
+                    if (mSubInfoList != null) {
+                        final int availableSubInfoLength = mSubInfoList.size();
+                        for (int i = 0; i < availableSubInfoLength; ++i) {
+                            final SubscriptionInfo sir = mSubInfoList.get(i);
+                            if (sir.getSubscriptionId() == subId) {
+                                simSlotIndex = sir.getSimSlotIndex();
+                            }
+                        }
+                    }
                     PhoneAccountHandle phoneAccountHandle =
                             subscriptionIdToPhoneAccountHandle(subId);
-                    setDefaultDataSubId(context, subId);
-                    setDefaultSmsSubId(context, subId);
-                    setUserSelectedOutgoingPhoneAccount(phoneAccountHandle);
+                    setDefaultDataSubId(context, simSlotIndex+1);
+                    setDefaultSmsSubId(context, simSlotIndex+1);
+                    //setUserSelectedOutgoingPhoneAccount(context,phoneAccountHandle);
+                    setDefaultCallSubId(context, simSlotIndex+1);
+
                     finish();
                 }
             });
@@ -129,11 +171,20 @@ public class SimDialogActivity extends Activity {
     private static void setDefaultSmsSubId(final Context context, final int subId) {
         final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
         subscriptionManager.setDefaultSmsSubId(subId);
+        subscriptionManager.setSMSPromptEnabled(false);
     }
 
-    private void setUserSelectedOutgoingPhoneAccount(PhoneAccountHandle phoneAccount) {
+    private static void setDefaultCallSubId(final Context context, final int subId) {
+        final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+        subscriptionManager.setDefaultVoiceSubId(subId);
+        subscriptionManager.setVoicePromptEnabled(false);
+    }
+
+    private void setUserSelectedOutgoingPhoneAccount(final Context context,PhoneAccountHandle phoneAccount) {
         final TelecomManager telecomManager = TelecomManager.from(this);
+        final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
         telecomManager.setUserSelectedOutgoingPhoneAccount(phoneAccount);
+        subscriptionManager.setVoicePromptEnabled(false);
     }
 
     private PhoneAccountHandle subscriptionIdToPhoneAccountHandle(final int subId) {
@@ -173,19 +224,19 @@ public class SimDialogActivity extends Activity {
                         switch (id) {
                             case DATA_PICK:
                                 sir = subInfoList.get(value);
-                                setDefaultDataSubId(context, sir.getSubscriptionId());
+                                setDefaultDataSubId(context, sir.getSimSlotIndex()+1);
                                 break;
                             case CALLS_PICK:
                                 final TelecomManager telecomManager =
                                         TelecomManager.from(context);
                                 final List<PhoneAccountHandle> phoneAccountsList =
                                         telecomManager.getCallCapablePhoneAccounts();
-                                setUserSelectedOutgoingPhoneAccount(
+                                setUserSelectedOutgoingPhoneAccount(context,
                                         value < 1 ? null : phoneAccountsList.get(value - 1));
                                 break;
                             case SMS_PICK:
                                 sir = subInfoList.get(value);
-                                setDefaultSmsSubId(context, sir.getSubscriptionId());
+                                setDefaultSmsSubId(context, sir.getSimSlotIndex()+1);
                                 break;
                             default:
                                 throw new IllegalArgumentException("Invalid dialog type "
