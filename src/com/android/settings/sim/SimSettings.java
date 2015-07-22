@@ -123,6 +123,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
         if (mSubInfoList == null) {
             mSubInfoList = mSubscriptionManager.getActiveSubscriptionInfoList();
+            PrintSubInfoList();
         }
 
         mNumSlots = tm.getSimCount();
@@ -218,6 +219,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 mAvailableSubInfos.add(sir);
             }
         }
+        Log.v(TAG,"zly::createPreferences ,mNumSlots = "+mNumSlots);
     }
 
     private void updateAllOptions() {
@@ -526,21 +528,6 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             simPref.addItem(getResources().getString(
                     R.string.sim_calls_ask_first_prefs_title), null);
         }
-        final int mSubInfoListSize = mSubInfoList.size();
-
-	     for (int i = 0; i < mSubInfoListSize; ++i) {
-            final SubscriptionInfo sir = mSubInfoList.get(i);
-            if(sir != null){
-                Log.v(TAG,"mSubInfoList, DisplayName :" +sir.getDisplayName().toString()
-					+" SubscriptionId :" +sir.getSubscriptionId() + "SimSlotIndex :" +sir.getSimSlotIndex()  );
-                if(sir.mStatus == mSubscriptionManager.ACTIVE){
-			           Log.d(TAG,"Status :ACTIVE" );
-                }else if(sir.mStatus == mSubscriptionManager.INACTIVE){
-                     Log.d(TAG,"Status :INACTIVE" );
-                }
-            }
-        }
-
         final int subAvailableSize = mAvailableSubInfos.size();
         for (int i = 0; i < subAvailableSize; ++i) {
             final SubscriptionInfo sir = mAvailableSubInfos.get(i);
@@ -548,7 +535,8 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 simPref.addItem(sir.getDisplayName().toString(), sir);
             }
         }
-
+        Log.v(TAG,"zly::askFirst: " +askFirst +" mActCount: " +mActCount+
+            " mSubInfoListSize :" +mSubInfoList.size() +" subAvailableSize :"+subAvailableSize);
         simPref.setCallback(new DropDownPreference.Callback() {
             @Override
             public boolean onItemSelected(int pos, Object value) {
@@ -625,11 +613,12 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 if (hasCard()) {
                    setSummary(res.getString(R.string.sim_settings_summary,
                             mSubscriptionInfo.getDisplayName(), mSubscriptionInfo.getNumber()));
+                   setEnabled(true);
                 } else {
-                  setSummary(res.getString(R.string.sim_settings_summary,
-                            mSubscriptionInfo.getDisplayName(), null));
+                   setSummary(R.string.sim_slot_empty);
+                   setFragment(null);
+                   setEnabled(false);
                 }
-                setEnabled(true);
             } else {
                 setSummary(R.string.sim_slot_empty);
                 setFragment(null);
@@ -756,11 +745,12 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     }
 
     private void  updateForSubinfoContentChange(){
+        final TelephonyManager tm =
+             (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         mAvailableSubInfos.clear();
         mNumSims = 0;
         mSubInfoList = mSubscriptionManager.getActiveSubscriptionInfoList();
-        final TelephonyManager tm =
-             (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+        PrintSubInfoList();
 
         for (int i = 0; i < mNumSlots; ++i) {
             final SubscriptionInfo sir = findRecordBySlotId(i);
@@ -770,7 +760,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 mAvailableSubInfos.add(sir);
             }
         }
-        Log.v(TAG, "updateForSubinfoContentChange,return");
+        Log.d(TAG, "updateForSubinfoContentChange");
         return;
     }
 
@@ -805,6 +795,23 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
              mSubscriptionManager.setDefaultVoiceSubId((SlotId+ 1));
              return;
 	 }
+    }
+    //mSubInfoList is strange,i am not sure whether right or not.
+    //So add this print function for debug.
+    private void PrintSubInfoList() {
+        final int mSubInfoListSize = mSubInfoList.size();
+        for (int i = 0; i < mSubInfoListSize; ++i) {
+            final SubscriptionInfo sir = mSubInfoList.get(i);
+            if(sir != null){
+                    Log.v(TAG,"zly::mSubInfoList, DisplayName :" +sir.getDisplayName().toString()
+                        +" SubscriptionId :" +sir.getSubscriptionId() + "SimSlotIndex :" +sir.getSimSlotIndex()  );
+                 if(sir.mStatus == mSubscriptionManager.ACTIVE){
+                    Log.v(TAG,"zly::Status :ACTIVE" );
+                 }else if(sir.mStatus == mSubscriptionManager.INACTIVE){
+                    Log.v(TAG,"zly::Status :INACTIVE" );
+                 }
+            }
+        }
     }
 
     // Add the function Which can count the num of IccCard.
