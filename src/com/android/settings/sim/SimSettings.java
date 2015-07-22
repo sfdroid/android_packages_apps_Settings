@@ -654,10 +654,9 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
                     String displayName = nameText.getText().toString();
                     int subId = mSubscriptionInfo.getSubscriptionId();
-                    int slotId = mSubscriptionInfo.getSimSlotIndex();
 
-                    SubscriptionInfo subInfoSim1Name = findRecordBySlotId(slotId);
-                    SubscriptionInfo subInfoSim2Name = findRecordBySlotId(slotId);
+                    SubscriptionInfo subInfoSim1Name = findRecordBySlotId(0);
+                    SubscriptionInfo subInfoSim2Name = findRecordBySlotId(1);
 
                     if (TextUtils.isEmpty(displayName.trim())
                             || displayName.equals(subInfoSim1Name.getDisplayName())
