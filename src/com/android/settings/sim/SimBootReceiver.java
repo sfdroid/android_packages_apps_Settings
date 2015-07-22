@@ -89,9 +89,8 @@ public class SimBootReceiver extends BroadcastReceiver {
             final String key = SLOT_PREFIX+i;
             final int lastSubId = getLastSubId(key);
 
-            if (sir != null) {
-                numSIMsDetected++;
-                final int currentSubId = sir.getSubscriptionId();
+            if ((sir != null) && (mTelephonyManager.hasIccCard(i))) {
+                final int currentSubId = sir.getSimSlotIndex()+1;
                 if (lastSubId == INVALID_SLOT) {
                     setLastSubId(key, currentSubId);
                 } else if (lastSubId != currentSubId) {
@@ -99,6 +98,7 @@ public class SimBootReceiver extends BroadcastReceiver {
                     setLastSubId(key, currentSubId);
                     notificationSent = true;
                 }
+                numSIMsDetected++;
                 lastSIMSlotDetected = i;
             } else if (lastSubId != SLOT_EMPTY) {
                 createNotification(mContext);

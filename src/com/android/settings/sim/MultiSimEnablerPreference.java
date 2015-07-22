@@ -155,7 +155,11 @@ public class MultiSimEnablerPreference extends Preference implements OnCheckedCh
 
         final Resources res = mContext.getResources();
         boolean isSubValid = isCurrentSubValid();
-        setEnabled(isSubValid);
+        if(isAirplaneModeOn()){
+            setEnabled(false);
+        }else{
+            setEnabled(isSubValid);
+        }
 
         logd("update() isSubValid "  + isSubValid);
         if (mSubTitle != null) {
@@ -172,7 +176,7 @@ public class MultiSimEnablerPreference extends Preference implements OnCheckedCh
 
     private boolean isCurrentSubValid() {
         boolean isSubValid = false;
-        if (!isAirplaneModeOn() && hasCard()) {
+        if (hasCard()) {
             List<SubscriptionInfo> sirList = SubscriptionManager.from(mContext)
                     .getActiveSubscriptionInfoList();
             if (sirList != null ) {

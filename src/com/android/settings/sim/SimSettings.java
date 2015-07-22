@@ -60,6 +60,32 @@ import com.android.settings.search.Indexable.SearchIndexProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+/*Author:zhaoliyuan
+	Date:2015.07.21
+	Comment: Big change on the Preferred SIM process
+	Cause:
+	The SubscriptionId of the two SIM cards changes all the time,
+	and we have not found the root cause,maybe it is Qualcomm's bug;
+	Interface SubscriptionManager.getActiveSubscriptionInfoList() returns incorrect Subscriptioninfo,
+	etc:SubscriptionInfo.mStatus is ACTIVE when SIM Empty;
+
+	Effect:
+	The  establishment	of Preferred SIM card options  depend on the SubscriptionId,
+	so the Preferred SIM card options (Data,Call,SMS) are in a mess.
+	Sometimes it changes when reboot,or the preferred option don't display.
+
+	Solution:
+	setDefaultDataSubId(final Context context, final int subId)
+	setDefaultSmsSubId(final Context context, final int subId)
+	setDefaultCallSubId(final Context context, final int subId)
+	When invoking these three functions anywhere in the project
+	(etc.framework/opt/telephony ,packages/services/Telephony,packages/services/Telecomm),
+	the input parameter "subId"  actually is  the SlotId .
+	Ask Every Time: 			   SubId =0;
+	card1:				 SlotId = 0,SubId =1;
+	card2:				 SlotId = 1,SubId =2;
+	*/
+
 
 public class SimSettings extends RestrictedSettingsFragment implements Indexable {
     private static final String TAG = "SimSettings";
@@ -719,6 +745,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             logd("msg.what = " + msg.what);
             switch(msg.what) {
                 case EVT_UPDATE:
+                    updateForSubinfoContentChange();
                     setDefaultSubIdForOnlyOneCard();
                     updateAllOptions();
                     break;
@@ -799,6 +826,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     //So add this print function for debug.
     private void PrintSubInfoList() {
         final int mSubInfoListSize = mSubInfoList.size();
+        Log.v(TAG,"zly::PrintSubInfoList");
         for (int i = 0; i < mSubInfoListSize; ++i) {
             final SubscriptionInfo sir = mSubInfoList.get(i);
             if(sir != null){

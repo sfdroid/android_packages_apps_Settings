@@ -102,30 +102,6 @@ public class SimDialogActivity extends Activity {
                     int simSlotIndex = 0;
                     List<SubscriptionInfo> mSubInfoList = null;
                     final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
-                    /*Author:zhaoliyuan
-                        Date:2015.07.21
-                        Cause:
-                        The SubscriptionId of the two SIM cards changes all the time,
-                        and we have not found the root cause,maybe it is Qualcomm's bug;
-                        Interface SubscriptionManager.getActiveSubscriptionInfoList() returns incorrect Subscriptioninfo,
-                        etc:SubscriptionInfo.mStatus is ACTIVE when SIM Empty;
-
-                        Effect:
-                        The  establishment  of Preferred SIM card options  depend on the SubscriptionId,
-                        so the Preferred SIM card options (Data,Call,SMS) are in a mess.
-                        Sometimes it changes when reboot,or the preferred option don't display.
-
-                        Solution:
-                        setDefaultDataSubId(final Context context, final int subId)
-                        setDefaultSmsSubId(final Context context, final int subId)
-                        setDefaultCallSubId(final Context context, final int subId)
-                        When invoking these three functions anywhere in the project
-                        (etc.framework/opt/telephony ,packages/services/Telephony,packages/services/Telecomm),
-                        the input parameter "subId"  actually is  the SlotId .
-                        Ask Every Time:                SubId =0;
-                        card1:               SlotId = 0,SubId =1;
-                        card2:               SlotId = 1,SubId =2;
-                        */
                     if (mSubInfoList == null) {
                         mSubInfoList = subscriptionManager.getActiveSubscriptionInfoList();
                     }
