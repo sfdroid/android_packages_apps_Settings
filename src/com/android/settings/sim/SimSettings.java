@@ -416,7 +416,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     public void onPause() {
         super.onPause();
         inActivity = false;
-        Log.d(TAG,"on Pause");
+        Log.d(TAG, "on Pause");
         dataDisableToastDisplayed = false;
         for (int i = 0; i < mSimEnablers.size(); ++i) {
             MultiSimEnablerPreference simEnabler = mSimEnablers.get(i);
@@ -665,8 +665,10 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
                     String displayName = nameText.getText().toString();
                     int subId = mSubscriptionInfo.getSubscriptionId();
-                    SubscriptionInfo subInfoSim1Name = findRecordBySubId(1);
-                    SubscriptionInfo subInfoSim2Name = findRecordBySubId(2);
+                    int slotId = mSubscriptionInfo.getSimSlotIndex();
+
+                    SubscriptionInfo subInfoSim1Name = findRecordBySlotId(slotId);
+                    SubscriptionInfo subInfoSim2Name = findRecordBySlotId(slotId);
 
                     if (TextUtils.isEmpty(displayName.trim())
                             || displayName.equals(subInfoSim1Name.getDisplayName())
