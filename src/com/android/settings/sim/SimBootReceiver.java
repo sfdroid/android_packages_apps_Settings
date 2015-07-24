@@ -37,6 +37,8 @@ import android.telephony.SubscriptionManager.OnSubscriptionsChangedListener;
 import com.android.settings.Utils;
 
 import java.util.List;
+import android.util.Log;
+
 
 public class SimBootReceiver extends BroadcastReceiver {
     private static final String TAG = "SimBootReceiver";
@@ -67,7 +69,7 @@ public class SimBootReceiver extends BroadcastReceiver {
         final boolean isInProvisioning = Settings.Global.getInt(mContext.getContentResolver(),
                 Settings.Global.DEVICE_PROVISIONED, 0) == 0;
         boolean notificationSent = false;
-        int numSIMsDetected = 0;
+        int numActiveSIMsDetected = 0;
         int lastSIMSlotDetected = -1;
 
         // Do not create notifications on single SIM devices or when provisiong.
@@ -98,7 +100,9 @@ public class SimBootReceiver extends BroadcastReceiver {
                     setLastSubId(key, currentSubId);
                     notificationSent = true;
                 }
-                numSIMsDetected++;
+                if(sir.mStatus == mSubscriptionManager.ACTIVE){
+                    numActiveSIMsDetected++;
+                }
                 lastSIMSlotDetected = i;
             } else if (lastSubId != SLOT_EMPTY) {
                 createNotification(mContext);
@@ -110,17 +114,12 @@ public class SimBootReceiver extends BroadcastReceiver {
             DefaultDataSubId/DefaultSmsSubId/DefaultVoiceSubId will be setted
             as the inserted card automatically.
             so no need to show the PREFERRED_PICK dialog*/
-        /*if (notificationSent) {
+        if ((notificationSent)&&(numActiveSIMsDetected > 1)) {
             Intent intent = new Intent(mContext, SimDialogActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (numSIMsDetected == 1) {
-                intent.putExtra(SimDialogActivity.DIALOG_TYPE_KEY, SimDialogActivity.PREFERRED_PICK);
-                intent.putExtra(SimDialogActivity.PREFERRED_SIM, lastSIMSlotDetected);
-            } else {
-                intent.putExtra(SimDialogActivity.DIALOG_TYPE_KEY, SimDialogActivity.DATA_PICK);
-            }
+            intent.putExtra(SimDialogActivity.DIALOG_TYPE_KEY, SimDialogActivity.DATA_PICK);
             mContext.startActivity(intent);
-        }*/
+        }
     }
 
     private int getLastSubId(String strSlotId) {
