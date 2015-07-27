@@ -81,8 +81,8 @@ import java.util.List;
 	When invoking these three functions anywhere in the project
 	(etc.framework/opt/telephony ,packages/services/Telephony,packages/services/Telecomm),
 	the input parameter "subId"  actually is  the SlotId .
-	Ask Every Time: 			   SubId =0;
-	card1:				 SlotId = 0,SubId =1;
+	Ask Every Time:             SubId =0;
+	card1:                            SlotId = 0,SubId =1;
 	card2:				 SlotId = 1,SubId =2;
 	*/
 
@@ -158,17 +158,6 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         mPhoneStateListener = new PhoneStateListener[mPhoneCount];
         listen();
 
-        // Add for Setting Default DataSubId, SmsSubId and VoiceSubId, When there is only one SIM card inserted.
-        if (hasNumIccCard() == 1) {
-            for (int i = 0; i < mPhoneCount; i++) {
-                if (tm.hasIccCard(i)) {
-                    mSubscriptionManager.setDefaultDataSubId((i + 1));
-                    mSubscriptionManager.setDefaultSmsSubId((i + 1));
-                    mSubscriptionManager.setDefaultVoiceSubId((i + 1));
-                }
-            }
-        }
-
         mPreferredDataSubscription = mSubscriptionManager.getDefaultDataSubId();
 
         createPreferences();
@@ -209,6 +198,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             Log.d(TAG, "Intent received: " + action);
             if (TelephonyIntents.ACTION_SUBINFO_RECORD_UPDATED.equals(action)) {
                 updateForSubinfoContentChange();
+                updateAllOptions();
             } else if(Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
                 updateSimEnablers();
             }
@@ -245,7 +235,6 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 mAvailableSubInfos.add(sir);
             }
         }
-        Log.v(TAG,"zly::createPreferences ,mNumSlots = "+mNumSlots);
     }
 
     private void updateAllOptions() {
@@ -368,7 +357,9 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             }else{
                 simPref.setSelectedItem(position, false);
             }
-	     }
+	 }else{
+            simPref.updateEmptyState();
+        }
         simPref.setEnabled(hasNumIccCard() > 1);
     }
 
@@ -386,10 +377,11 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             }else{
                 simPref.setSelectedItem(position, false);
             }
+        }else{
+            simPref.updateEmptyState();
         }
 
         updateCellularDataPreference();
-        simPref.notifyDependencyChange(false);
     }
 
     private void updateCellularDataPreference() {
@@ -436,6 +428,8 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
            }else{
                simPref.setSelectedItem(position, false);
            }
+        }else{
+            simPref.updateEmptyState();
         }
         simPref.setEnabled(hasNumIccCard() > 1);
     }
@@ -561,8 +555,6 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 simPref.addItem(sir.getDisplayName().toString(), sir);
             }
         }
-        Log.v(TAG,"zly::askFirst: " +askFirst +" mActCount: " +mActCount+
-            " mSubInfoListSize :" +mSubInfoList.size() +" subAvailableSize :"+subAvailableSize);
         simPref.setCallback(new DropDownPreference.Callback() {
             @Override
             public boolean onItemSelected(int pos, Object value) {
@@ -786,7 +778,6 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 mAvailableSubInfos.add(sir);
             }
         }
-        Log.d(TAG, "updateForSubinfoContentChange");
         return;
     }
 
@@ -826,16 +817,16 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     //So add this print function for debug.
     private void PrintSubInfoList() {
         final int mSubInfoListSize = mSubInfoList.size();
-        Log.v(TAG,"zly::PrintSubInfoList");
+        Log.v(TAG,"PrintSubInfoList");
         for (int i = 0; i < mSubInfoListSize; ++i) {
             final SubscriptionInfo sir = mSubInfoList.get(i);
             if(sir != null){
-                    Log.v(TAG,"zly::mSubInfoList, DisplayName :" +sir.getDisplayName().toString()
+                    Log.v(TAG,"mSubInfoList, DisplayName :" +sir.getDisplayName().toString()
                         +" SubscriptionId :" +sir.getSubscriptionId() + "SimSlotIndex :" +sir.getSimSlotIndex()  );
                  if(sir.mStatus == mSubscriptionManager.ACTIVE){
-                    Log.v(TAG,"zly::Status :ACTIVE" );
+                    Log.v(TAG,"Status :ACTIVE" );
                  }else if(sir.mStatus == mSubscriptionManager.INACTIVE){
-                    Log.v(TAG,"zly::Status :INACTIVE" );
+                    Log.v(TAG,"Status :INACTIVE" );
                  }
             }
         }

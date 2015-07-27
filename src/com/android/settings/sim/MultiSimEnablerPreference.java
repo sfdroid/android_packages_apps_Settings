@@ -313,7 +313,7 @@ public class MultiSimEnablerPreference extends Preference implements OnCheckedCh
     }
 
     private void processSetUiccDone() {
-        sendMessage(EVT_UPDATE, mParentHandler, MSG_DELAY_TIME);
+        //sendMessage(EVT_UPDATE, mParentHandler, MSG_DELAY_TIME);
         sendMessage(EVT_SHOW_RESULT_DLG, mHandler, MSG_DELAY_TIME);
         mCmdInProgress = false;
         unregisterReceiver();

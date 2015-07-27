@@ -83,6 +83,10 @@ public class DropDownPreference extends Preference {
         setSelectedItem(position, true);
     }
 
+    public void updateEmptyState() {
+        setSummary(null);
+        notifyDependencyChange(true);
+    }
     public void setSelectedItem(int position, boolean doCall) {
         final Object value = mValues.get(position);
         if (doCall && mCallback != null && !mCallback.onItemSelected(position, value)) {
