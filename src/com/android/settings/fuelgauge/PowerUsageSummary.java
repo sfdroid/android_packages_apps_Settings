@@ -260,7 +260,13 @@ public class PowerUsageSummary extends PreferenceFragment {
         final PowerProfile powerProfile = mStatsHelper.getPowerProfile();
         final BatteryStats stats = mStatsHelper.getStats();
         final double averagePower = powerProfile.getAveragePower(PowerProfile.POWER_SCREEN_FULL);
-        if (averagePower >= MIN_AVERAGE_POWER_THRESHOLD_MILLI_AMP) {
+        /* SPRD: add for power usage info cannot be displayed @{ */
+        long uSecTime = android.os.SystemClock.elapsedRealtime() * 1000;
+        long uSecNow = mStatsHelper.getStats().computeBatteryRealtime(uSecTime, BatteryStats.STATS_SINCE_CHARGED);
+        long screenTime = mStatsHelper.getStats().getScreenOnTime(uSecNow,BatteryStats.STATS_SINCE_CHARGED);
+        // if (averagePower >= MIN_AVERAGE_POWER_THRESHOLD_MILLI_AMP) {
+        if (screenTime > 0 && averagePower * screenTime >= MIN_AVERAGE_POWER_THRESHOLD_MILLI_AMP){
+        /* @} */
             final List<UserHandle> profiles = mUm.getUserProfiles();
 
             mStatsHelper.refreshStats(BatteryStats.STATS_SINCE_CHARGED, profiles);
