@@ -1295,12 +1295,9 @@
     </string-array>
 
     <!-- Array of titles for sim color for multi-sim -->
+    <!-- Must match frameworks/base/core/res/res/values/arrays.xml sim_colors -->
     <string-array name="color_picker">
-        <item>Teal</item>
-        <item>Blue</item>
-        <item>Indigo</item>
-        <item>Purple</item>
-        <item>Pink</item>
-        <item>Red</item>
+        <item>Fairphone Blue</item>
+        <item>Fairphone Dark Blue</item>
     </string-array>
 </resources>
