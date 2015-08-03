@@ -360,7 +360,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 	 }else{
             simPref.updateEmptyState();
         }
-        simPref.setEnabled(hasNumIccCard() > 1);
+        simPref.setEnabled(subAvailableSize > 1);
     }
 
     private void updateCellularDataValues() {
@@ -387,8 +387,9 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     private void updateCellularDataPreference() {
         final DropDownPreference simPref = (DropDownPreference) findPreference(KEY_CELLULAR_DATA);
         boolean callStateIdle = isCallStateIdle();
+        final int subAvailableSize = mAvailableSubInfos.size();
         // Enable data preference in msim mode and call state idle
-        simPref.setEnabled((hasNumIccCard() > 1) && callStateIdle);
+        simPref.setEnabled((subAvailableSize > 1) && callStateIdle);
         // Display toast only once when the user enters the activity even though the call moves
         // through multiple call states (eg - ringing to offhook for incoming calls)
         if (callStateIdle == false && inActivity && dataDisableToastDisplayed == false) {
@@ -431,7 +432,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         }else{
             simPref.updateEmptyState();
         }
-        simPref.setEnabled(hasNumIccCard() > 1);
+        simPref.setEnabled(subAvailableSize > 1);
     }
 
     @Override
