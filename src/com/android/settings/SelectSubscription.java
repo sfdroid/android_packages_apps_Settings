@@ -67,13 +67,23 @@ public class SelectSubscription extends  TabActivity {
         super.onCreate(icicle);
         log("Creating activity");
 
-        setContentView(R.layout.select_subscription);
-
-        TabHost tabHost = getTabHost();
 
         Intent intent =  getIntent();
-        intent.putExtra(PACKAGE, "com.android.settings");
-        intent.putExtra(TARGET_CLASS, "com.android.settings.deviceinfo.MSimSubscriptionStatus");
+        if ((intent.getStringExtra(PACKAGE) == null)
+                ||(intent.getStringExtra(TARGET_CLASS) == null)){
+            intent.putExtra(PACKAGE, "com.android.settings");
+            intent.putExtra(TARGET_CLASS, "com.android.settings.deviceinfo.MSimSubscriptionStatus");
+        }
+        if (intent.getStringExtra(PACKAGE).equals("com.android.settings")
+             && intent.getStringExtra(TARGET_CLASS).equals("com.android.settings.IccLockSettings")){
+            setTitle(getString(R.string.sim_lock_settings_title));
+        }else{
+            setTitle(getString(R.string.subs_settings));
+        }
+
+        setContentView(R.layout.select_subscription);
+        TabHost tabHost = getTabHost();
+
         String pkg = intent.getStringExtra(PACKAGE);
         String targetClass = intent.getStringExtra(TARGET_CLASS);
         if (pkg == null || pkg.length() <= 0 || targetClass == null || targetClass.length() <= 0) {
