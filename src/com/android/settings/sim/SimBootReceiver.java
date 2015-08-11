@@ -114,12 +114,12 @@ public class SimBootReceiver extends BroadcastReceiver {
             DefaultDataSubId/DefaultSmsSubId/DefaultVoiceSubId will be setted
             as the inserted card automatically.
             so no need to show the PREFERRED_PICK dialog*/
-        if ((notificationSent)&&(numActiveSIMsDetected > 1)) {
+        /*if ((notificationSent)&&(numActiveSIMsDetected > 1)) {
             Intent intent = new Intent(mContext, SimDialogActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(SimDialogActivity.DIALOG_TYPE_KEY, SimDialogActivity.DATA_PICK);
             mContext.startActivity(intent);
-        }
+        }*/
     }
 
     private int getLastSubId(String strSlotId) {

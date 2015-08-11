@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.telecom.PhoneAccount;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
+import android.telephony.TelephonyManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
@@ -67,11 +68,25 @@ public class SimDialogActivity extends Activity {
         super.onCreate(savedInstanceState);
         final Bundle extras = getIntent().getExtras();
         final int dialogType = extras.getInt(DIALOG_TYPE_KEY, INVALID_PICK);
+        final Context context = getApplicationContext();
+        final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
 
         switch (dialogType) {
             case DATA_PICK:
             case CALLS_PICK:
             case SMS_PICK:
+                if(hasNumIccCard()<=1){
+                    finish();
+                    return;
+                }
+                if((dialogType ==SMS_PICK)&& !subscriptionManager.isSMSPromptEnabled()){
+                    finish();
+                    return;
+                }
+                if((dialogType ==CALLS_PICK)&& !subscriptionManager.isVoicePromptEnabled()){
+                    finish();
+                    return;
+                }
                 createDialog(this, dialogType).show();
                 break;
             case PREFERRED_PICK:
@@ -141,13 +156,15 @@ public class SimDialogActivity extends Activity {
     private static void setDefaultDataSubId(final Context context, final int subId) {
         final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
         subscriptionManager.setDefaultDataSubId(subId);
-        Toast.makeText(context, R.string.data_switch_started, Toast.LENGTH_LONG).show();
     }
 
     private static void setDefaultSmsSubId(final Context context, final int subId) {
         final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
         subscriptionManager.setDefaultSmsSubId(subId);
-        subscriptionManager.setSMSPromptEnabled(false);
+        //Fix bug,when set sms to 'Ask Every Time',launch Hangout,Select SIM Card pops up.
+        //Select Card 1,then look at the SIM Preferred Setting,the option changes to Card 1.
+        //The option should still be 'Ask Every Time'
+        //subscriptionManager.setSMSPromptEnabled(false);
     }
 
     private static void setDefaultCallSubId(final Context context, final int subId) {
@@ -306,6 +323,25 @@ public class SimDialogActivity extends Activity {
 
         return dialog;
 
+    }
+    // Add the function Which can count the num of IccCard.
+    private int hasNumIccCard() {
+        final Context context = getApplicationContext();
+        if (context != null) {
+            TelephonyManager tm =
+            (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            if (tm != null) {
+                int phoneCount = tm.getPhoneCount();
+                int mRealNumSimCard = 0;
+                for (int i = 0; i < phoneCount; i++) {
+                    if (tm.hasIccCard(i)) {
+                        mRealNumSimCard ++;
+                    }
+                }
+                return mRealNumSimCard;
+            }
+        }
+        return -1;
     }
 
     private class SelectAccountListAdapter extends ArrayAdapter<String> {
