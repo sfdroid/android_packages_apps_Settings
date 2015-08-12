@@ -131,11 +131,9 @@ public class SimDialogActivity extends Activity {
                     }
                     PhoneAccountHandle phoneAccountHandle =
                             subscriptionIdToPhoneAccountHandle(subId);
-                    setDefaultDataSubId(context, simSlotIndex+1);
-                    setDefaultSmsSubId(context, simSlotIndex+1);
-                    //setUserSelectedOutgoingPhoneAccount(context,phoneAccountHandle);
-                    setDefaultCallSubId(context, simSlotIndex+1);
-
+                    setDefaultDataSubId(context, subId);
+                    setDefaultSmsSubId(context, subId);
+                    setUserSelectedOutgoingPhoneAccount(context,phoneAccountHandle);
                     finish();
                 }
             });
@@ -217,7 +215,7 @@ public class SimDialogActivity extends Activity {
                         switch (id) {
                             case DATA_PICK:
                                 sir = subInfoList.get(value);
-                                setDefaultDataSubId(context, sir.getSimSlotIndex()+1);
+                                setDefaultDataSubId(context, sir.getSubscriptionId());
                                 break;
                             case CALLS_PICK:
                                 final TelecomManager telecomManager =
@@ -229,7 +227,7 @@ public class SimDialogActivity extends Activity {
                                 break;
                             case SMS_PICK:
                                 sir = subInfoList.get(value);
-                                setDefaultSmsSubId(context, sir.getSimSlotIndex()+1);
+                                setDefaultSmsSubId(context, sir.getSubscriptionId());
                                 break;
                             default:
                                 throw new IllegalArgumentException("Invalid dialog type "

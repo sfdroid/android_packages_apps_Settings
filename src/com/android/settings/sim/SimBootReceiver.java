@@ -92,7 +92,7 @@ public class SimBootReceiver extends BroadcastReceiver {
             final int lastSubId = getLastSubId(key);
 
             if ((sir != null) && (mTelephonyManager.hasIccCard(i))) {
-                final int currentSubId = sir.getSimSlotIndex()+1;
+                final int currentSubId = sir.getSubscriptionId();
                 if (lastSubId == INVALID_SLOT) {
                     setLastSubId(key, currentSubId);
                 } else if (lastSubId != currentSubId) {

@@ -343,9 +343,16 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
     private void updateSmsValues() {
         final DropDownPreference simPref = (DropDownPreference) findPreference(KEY_SMS);
-        int position = mSubscriptionManager.isSMSPromptEnabled() ?
+        int subId = mSubscriptionManager.isSMSPromptEnabled() ?
                 0 : mSubscriptionManager.getDefaultSmsSubId();
+        int position;
         final int subAvailableSize = mAvailableSubInfos.size();
+
+        if(subId == 0){
+            position = 0;
+        }else{
+            position=findSlotIdBySubId(subId) +1;
+        }
 
         if((position !=0 )&& (position !=1) && (position !=2)){
             position =findSlotIdBySubId(position)+1;
@@ -365,7 +372,8 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
     private void updateCellularDataValues() {
         final DropDownPreference simPref = (DropDownPreference) findPreference(KEY_CELLULAR_DATA);
-        int position = mSubscriptionManager.getDefaultDataSubId()-1;
+        int subId = mSubscriptionManager.getDefaultDataSubId();
+        int position=findSlotIdBySubId(subId);
         final int subAvailableSize = mAvailableSubInfos.size();
 
         if((position !=0) && (position !=1) ){
@@ -416,9 +424,15 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
     private void updateCallValues() {
         final DropDownPreference simPref = (DropDownPreference) findPreference(KEY_CALLS);
-        int position = mSubscriptionManager.isVoicePromptEnabled() ?
+        int subId = mSubscriptionManager.isVoicePromptEnabled() ?
                 0 : mSubscriptionManager.getDefaultVoiceSubId();
+        int position;
         final int subAvailableSize = mAvailableSubInfos.size();
+        if(subId == 0){
+            position = 0;
+        }else{
+            position=findSlotIdBySubId(subId) + 1;
+        }
 
         if((position !=0) && (position !=1) && (position !=2)){
            position =findSlotIdBySubId(position)+1;
@@ -560,7 +574,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             @Override
             public boolean onItemSelected(int pos, Object value) {
                 final int subId = value == null ? 0 :
-                        ((SubscriptionInfo)value).getSimSlotIndex() +1;
+                        ((SubscriptionInfo)value).getSubscriptionId();
 
                 Log.d(TAG,"calling setCallback: " + simPref.getKey() + "subId: " + subId);
                 if (simPref.getKey().equals(KEY_CELLULAR_DATA)) {
@@ -689,7 +703,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                                 subId,
                                 SubscriptionManager.NAME_SOURCE_USER_INPUT);
 
-                        int DummysubId = mSubscriptionInfo.getSimSlotIndex() + 1;
+                        int DummysubId = mSubscriptionInfo.getSubscriptionId();
                         SubscriptionInfo subInfo = findRecordBySubId(subId);
                         if (subInfo != null) {
                             subInfo.setDisplayName(displayName);
@@ -790,11 +804,13 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             for (int i = 0; i < mPhoneCount; i++) {
 		    int SlotId = i;
                 if (tm.hasIccCard(i)) {
-                    mSubscriptionManager.setDefaultDataSubId((SlotId + 1));
+                    SubscriptionInfo  SubscriptionInfo =findRecordBySlotId(i);
+                    int SubId = SubscriptionInfo.getSubscriptionId();
+                    mSubscriptionManager.setDefaultDataSubId(SubId);
 		     mSubscriptionManager.setSMSPromptEnabled(false);
-                    mSubscriptionManager.setDefaultSmsSubId((SlotId + 1));
+                    mSubscriptionManager.setDefaultSmsSubId(SubId);
 		     mSubscriptionManager.setVoicePromptEnabled(false);
-                    mSubscriptionManager.setDefaultVoiceSubId((SlotId+ 1));
+                    mSubscriptionManager.setDefaultVoiceSubId(SubId);
                 }else{
                     Log.d(TAG, "Do not hasIccCard,SlotId = " + SlotId);
                 }
@@ -804,13 +820,13 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         int subAvailableSize = mAvailableSubInfos.size();
 	 if(subAvailableSize == 1){
              SubscriptionInfo  SubscriptionInfo = mAvailableSubInfos.get(0);
-             int SlotId = SubscriptionInfo.getSimSlotIndex();
+             int SubId = SubscriptionInfo.getSubscriptionId();
 			 
-             mSubscriptionManager.setDefaultDataSubId((SlotId + 1));
+             mSubscriptionManager.setDefaultDataSubId(SubId);
              mSubscriptionManager.setSMSPromptEnabled(false);
-             mSubscriptionManager.setDefaultSmsSubId((SlotId + 1));
+             mSubscriptionManager.setDefaultSmsSubId(SubId);
              mSubscriptionManager.setVoicePromptEnabled(false);
-             mSubscriptionManager.setDefaultVoiceSubId((SlotId+ 1));
+             mSubscriptionManager.setDefaultVoiceSubId(SubId);
              return;
 	 }
     }
