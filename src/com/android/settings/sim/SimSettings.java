@@ -276,11 +276,17 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     private void updateSimSlotValues() {
         final PreferenceScreen prefScreen = getPreferenceScreen();
 
-        final int prefSize = prefScreen.getPreferenceCount();
-        for (int i = 0; i < prefSize; ++i) {
-            Preference pref = prefScreen.getPreference(i);
-            if (pref instanceof SimPreference) {
-                ((SimPreference)pref).update();
+        final int prefScreenSize = prefScreen.getPreferenceCount();
+        for (int i = 0; i < prefScreenSize; ++i) {
+            Preference prefCategory = prefScreen.getPreference(i);
+            if(prefCategory instanceof PreferenceCategory){
+                final int prefGroupSize = ((PreferenceCategory)prefCategory).getPreferenceCount();
+                for(int j = 0;j< prefGroupSize; ++j){
+                    Preference pref = ((PreferenceCategory)prefCategory).getPreference(j);
+                    if (pref instanceof SimPreference) {
+                        ((SimPreference)pref).update();
+                    }
+                }
             }
         }
     }
@@ -644,9 +650,21 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             setTitle(res.getString(R.string.sim_card_number_title, mSlotId + 1));
             if (mSubscriptionInfo != null) {
                 if (hasCard()) {
+                    if (mSubInfoList != null ) {
+                       for (SubscriptionInfo sir : mSubInfoList) {
+                           if (sir != null && mSlotId == sir.getSimSlotIndex()) {
+                               mSubscriptionInfo = sir;
+                               break;
+                           }
+                       }
+                   }
                    setSummary(res.getString(R.string.sim_settings_summary,
                             mSubscriptionInfo.getDisplayName(), mSubscriptionInfo.getNumber()));
-                   setEnabled(true);
+                   if (mSubscriptionInfo.mStatus == mSubscriptionManager.ACTIVE){
+                       setEnabled(true);
+                   }else{
+                       setEnabled(false);
+                   }
                 } else {
                    setSummary(R.string.sim_slot_empty);
                    setFragment(null);
