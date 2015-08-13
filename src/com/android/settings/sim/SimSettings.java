@@ -704,17 +704,31 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                     final EditText nameText = (EditText)dialogLayout.findViewById(R.id.sim_name);
 
                     String displayName = nameText.getText().toString();
+                    Log.d(TAG,"createEditDialog,setPositiveButton. mSubscriptionInfo :"
+                    +mSubscriptionInfo + "displayName:" +displayName);
+
                     int subId = mSubscriptionInfo.getSubscriptionId();
-
-                    SubscriptionInfo subInfoSim1Name = findRecordBySlotId(0);
-                    SubscriptionInfo subInfoSim2Name = findRecordBySlotId(1);
-
-                    if (TextUtils.isEmpty(displayName.trim())
-                            || displayName.equals(subInfoSim1Name.getDisplayName())
-                            || displayName.equals(subInfoSim2Name.getDisplayName())) {
+                    if(TextUtils.isEmpty(displayName.trim())){
                         Toast.makeText(getActivity(), "Please enter valid SIM name",
+                            Toast.LENGTH_SHORT).show();
+                        return;
+                    }else if ((hasNumIccCard() == 1) &&
+                             displayName.equals(mSubscriptionInfo.getDisplayName())){
+                        Toast.makeText(getActivity(), "Please enter valid SIM name",
+                             Toast.LENGTH_SHORT).show();
+                        return;
+                    }else{
+                        SubscriptionInfo subInfoSim1Name = findRecordBySlotId(0);
+                        SubscriptionInfo subInfoSim2Name = findRecordBySlotId(1);
+                        if( displayName.equals(subInfoSim1Name.getDisplayName())
+                            || displayName.equals(subInfoSim2Name.getDisplayName())){
+                            Toast.makeText(getActivity(), "Please enter valid SIM name",
                                 Toast.LENGTH_SHORT).show();
-                    } else {
+                            return;
+                        }
+                    }
+
+                   {
                         mSubscriptionInfo.setDisplayName(displayName);
                         mSubscriptionManager.setDisplayName(
                                 displayName,
@@ -726,7 +740,6 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                         if (subInfo != null) {
                             subInfo.setDisplayName(displayName);
                         }
-                        setDefaultSubIdForOnlyOneCard();
                         updateAllOptions();
                         update();
                     }
