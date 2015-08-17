@@ -142,7 +142,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         Log.d(TAG,"on onCreate");
-        
+
         mSubscriptionManager = SubscriptionManager.from(getActivity());
         final TelephonyManager tm =
                     (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
@@ -852,7 +852,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 	 if(subAvailableSize == 1){
              SubscriptionInfo  SubscriptionInfo = mAvailableSubInfos.get(0);
              int SubId = SubscriptionInfo.getSubscriptionId();
-			 
+
              mSubscriptionManager.setDefaultDataSubId(SubId);
              mSubscriptionManager.setSMSPromptEnabled(false);
              mSubscriptionManager.setDefaultSmsSubId(SubId);
@@ -864,6 +864,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     //mSubInfoList is strange,i am not sure whether right or not.
     //So add this print function for debug.
     private void PrintSubInfoList() {
+        if(mSubInfoList == null) return;
         final int mSubInfoListSize = mSubInfoList.size();
         Log.v(TAG,"PrintSubInfoList");
         for (int i = 0; i < mSubInfoListSize; ++i) {
