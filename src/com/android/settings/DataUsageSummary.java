@@ -90,6 +90,7 @@ import android.os.UserManager;
 import android.preference.Preference;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.telephony.SubscriptionInfo;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.format.Formatter;
@@ -2311,7 +2312,32 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
         }
 
         final ConnectivityManager conn = ConnectivityManager.from(context);
-        return conn.isNetworkSupported(TYPE_MOBILE);
+        final TelephonyManager tele = TelephonyManager.from(context);
+        final List<SubscriptionInfo> subInfoList = SubscriptionManager.from(
+                context).getActiveSubscriptionInfoList();
+        // No activated Subscriptions
+        if (subInfoList == null) {
+            if (LOGD)
+                Log.d(TAG, "hasReadyMobileRadio: subInfoList=null");
+            return false;
+        }
+        // require both supported network and ready SIM
+        boolean isReady = true;
+        for (SubscriptionInfo subInfo : subInfoList) {
+            isReady = isReady
+                    & tele.getSimState(subInfo.getSimSlotIndex()) == SIM_STATE_READY;
+            if (LOGD)
+                Log.d(TAG, "hasReadyMobileRadio: subInfo=" + subInfo);
+        }
+        boolean retVal = conn.isNetworkSupported(TYPE_MOBILE) && isReady;
+        if (LOGD) {
+            Log.d(TAG,
+                    "hasReadyMobileRadio:"
+                            + " conn.isNetworkSupported(TYPE_MOBILE)="
+                            + conn.isNetworkSupported(TYPE_MOBILE)
+                            + " isReady=" + isReady);
+        }
+        return retVal;
     }
 
     /**
