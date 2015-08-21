@@ -713,11 +713,12 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                         Toast.makeText(getActivity(), "Please enter valid SIM name",
                             Toast.LENGTH_SHORT).show();
                         return;
-                    }else if ((hasNumIccCard() == 1) &&
-                             displayName.equals(mSubscriptionInfo.getDisplayName())){
-                        Toast.makeText(getActivity(), "Please enter valid SIM name",
-                             Toast.LENGTH_SHORT).show();
-                        return;
+                    }else if (hasNumIccCard() == 1){
+                        if (displayName.equals(mSubscriptionInfo.getDisplayName())){
+                            Toast.makeText(getActivity(), "Please enter valid SIM name",
+                                Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                     }else{
                         SubscriptionInfo subInfoSim1Name = findRecordBySlotId(0);
                         SubscriptionInfo subInfoSim2Name = findRecordBySlotId(1);
