@@ -316,12 +316,13 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         return null;
     }
     private int findSlotIdBySubId(final int subId) {
-        final int availableSubInfoLength = mSubInfoList.size();
-
-        for (int i = 0; i < availableSubInfoLength; ++i) {
-            final SubscriptionInfo sir = mSubInfoList.get(i);
-            if (sir != null && (sir.getSubscriptionId() == subId)) {
-                return sir.getSimSlotIndex();
+        if (mSubInfoList != null) {
+            final int availableSubInfoLength = mSubInfoList.size();
+            for (int i = 0; i < availableSubInfoLength; ++i) {
+                final SubscriptionInfo sir = mSubInfoList.get(i);
+                if (sir != null && (sir.getSubscriptionId() == subId)) {
+                    return sir.getSimSlotIndex();
+                }
             }
         }
         return 0;

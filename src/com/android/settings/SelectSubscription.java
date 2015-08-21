@@ -49,7 +49,7 @@ public class SelectSubscription extends  TabActivity {
     public static final String PACKAGE = "PACKAGE";
     public static final String TARGET_CLASS = "TARGET_CLASS";
 
-    private String[] tabLabel = {"SUB 1", "SUB 2", "SUB 3"};
+    private String[] tabLabel = {"CARD 1", "CARD 2", "CARD 3"};
 
     private TabSpec subscriptionPref;
 
