@@ -263,6 +263,8 @@ public class NotificationAppList extends PinnedHeaderListFragment
             vh.title = (TextView) v.findViewById(android.R.id.title);
             vh.subtitle = (TextView) v.findViewById(android.R.id.text1);
             vh.rowDivider = v.findViewById(R.id.row_divider);
+            final AppRow row = (AppRow)r;
+            new TripleSwitchView(mContext, v.findViewById(R.id.triple_switch_group), vh.subtitle, row.pkg, row.uid);
             v.setTag(vh);
             return v;
         }
@@ -289,7 +291,7 @@ public class NotificationAppList extends PinnedHeaderListFragment
             final ViewHolder vh = (ViewHolder) view.getTag();
             enableLayoutTransitions(vh.row, animate);
             vh.rowDivider.setVisibility(row.first ? View.GONE : View.VISIBLE);
-            vh.row.setOnClickListener(new OnClickListener() {
+            /*vh.row.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mContext.startActivity(new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
@@ -299,13 +301,13 @@ public class NotificationAppList extends PinnedHeaderListFragment
                             .putExtra(EXTRA_HAS_SETTINGS_INTENT, row.settingsIntent != null)
                             .putExtra(EXTRA_SETTINGS_INTENT, row.settingsIntent));
                 }
-            });
+            });*/
             enableLayoutTransitions(vh.row, animate);
             vh.icon.setImageDrawable(row.icon);
             vh.title.setText(row.label);
-            final String sub = getSubtitle(row);
-            vh.subtitle.setText(sub);
-            vh.subtitle.setVisibility(!sub.isEmpty() ? View.VISIBLE : View.GONE);
+            //final String sub = getSubtitle(row);
+            //vh.subtitle.setText(sub);
+            //vh.subtitle.setVisibility(!sub.isEmpty() ? View.VISIBLE : View.GONE);
         }
 
         private String getSubtitle(AppRow row) {

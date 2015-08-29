@@ -29,12 +29,16 @@
         android:contentDescription="@null"
         android:padding="8dp" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@android:id/icon"
+        android:orientation="vertical">
     <TextView
         android:id="@android:id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@android:id/icon"
         android:ellipsize="end"
         android:singleLine="true"
         android:textAlignment="viewStart"
@@ -43,14 +47,62 @@
     <TextView
         android:id="@android:id/text1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/notification_app_icon_size"
-        android:layout_toEndOf="@android:id/icon"
-        android:gravity="bottom"
+        android:layout_height="wrap_content"
         android:ellipsize="end"
         android:singleLine="true"
         android:textAlignment="viewStart"
         android:textColor="?android:attr/textColorSecondary"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/triple_switch_group"
+        android:layout_width="@dimen/notification_triple_switch_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true">
+
+        <View
+            android:id="@+id/toggle_background"
+            android:layout_width="@dimen/notification_triple_switch_background_width"
+            android:layout_height="@dimen/notification_triple_switch_background_height"
+            android:layout_marginLeft="@dimen/notification_triple_switch_background_margin_left"
+            android:layout_marginTop="@dimen/notification_triple_switch_background_margin_top"
+            android:background="@drawable/toggle_switch_background_grey" />
+
+        <LinearLayout
+            android:layout_width="@dimen/notification_triple_switch_width"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:id="@+id/off_toggle_button"
+                android:layout_width="@dimen/notification_triple_switch_toggle_size"
+                android:layout_height="@dimen/notification_triple_switch_toggle_size"
+                android:background="@drawable/triple_toggle_button_grey_background"
+                android:checked="true"
+                android:textOff=""
+                android:textOn="" />
+
+            <ToggleButton
+                android:id="@+id/on_toggle_button"
+                android:layout_width="@dimen/notification_triple_switch_toggle_size"
+                android:layout_height="@dimen/notification_triple_switch_toggle_size"
+                android:layout_marginLeft="@dimen/notification_triple_switch_toggle_gap"
+                android:layout_marginRight="@dimen/notification_triple_switch_toggle_gap"
+                android:background="@drawable/triple_toggle_button_blue_background"
+                android:textOff=""
+                android:textOn="" />
+
+            <ToggleButton
+                android:id="@+id/priority_toggle_button"
+                android:layout_width="@dimen/notification_triple_switch_toggle_size"
+                android:layout_height="@dimen/notification_triple_switch_toggle_size"
+                android:background="@drawable/triple_toggle_button_green_background"
+                android:textOff=""
+                android:textOn="" />
+        </LinearLayout>
+    </FrameLayout>
 
     <View
         android:id="@+id/row_divider"

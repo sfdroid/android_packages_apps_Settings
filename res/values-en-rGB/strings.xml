@@ -2403,7 +2403,7 @@
     <string name="lock_screen_notifications_summary_hide" msgid="7891552853357258782">"Hide sensitive notification content"</string>
     <string name="lock_screen_notifications_summary_disable" msgid="3001013816427963576">"Don\'t show notifications at all"</string>
     <string name="lock_screen_notifications_interstitial_message" msgid="6164532459432182244">"When your device is locked, how do you want notifications to show?"</string>
-    <string name="app_notifications_title" msgid="5810577805218003760">"App notifications"</string>
+    <string name="app_notifications_title" msgid="5810577805218003760">"Notifications"</string>
     <string name="other_sound_settings" msgid="3151004537006844718">"Other sounds"</string>
     <string name="dial_pad_tones_title" msgid="1999293510400911558">"Dial pad tones"</string>
     <string name="screen_locking_sounds_title" msgid="1340569241625989837">"Screen locking sounds"</string>

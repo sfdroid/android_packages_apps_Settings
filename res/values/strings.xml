@@ -5857,7 +5857,7 @@
     <string name="lock_screen_notifications_interstitial_message">When your device is locked, how do you want notifications to show?</string>
 
     <!-- Sound & notification > Notification section: Title for the option managing notifications per application. [CHAR LIMIT=30] -->
-    <string name="app_notifications_title">App notifications</string>
+    <string name="app_notifications_title">Notifications</string>
 
     <!-- Sound & notification > Sound section: Title for the other sounds option and associated settings page. [CHAR LIMIT=30] -->
     <string name="other_sound_settings">Other sounds</string>
@@ -6196,4 +6196,12 @@
 
     <!-- Title for encryption dialog that disables TalkBack. [CHAR_LIMIT=25] -->
     <string name="changes_restart_dialog">Please restart for changes to take effect</string>
+
+    <!-- Toast messages for notifications toggle -->
+    <string name="notifications_off">Off</string>
+    <string name="notifications_on">On</string>
+    <string name="notifications_priority">Priority</string>
+    <string name="notifications_on_description">Show notifications from this app.</string>
+    <string name="notifications_off_description">Never show notifications from this app.</string>
+    <string name="notifications_priority_description">Show notifications at the top of the list and keep them coming when the device is set to priority interruptions only.</string>
 </resources>
