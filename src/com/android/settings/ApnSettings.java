@@ -258,6 +258,20 @@ public class ApnSettings extends SettingsPreferenceFragment implements
                 cursor.moveToNext();
             }
             cursor.close();
+            boolean isChecked =false;
+
+            for (int i = 0; i < apnList.getPreferenceCount(); i++ ) {
+                ApnPreference preference = (ApnPreference) apnList.getPreference(i);
+                if (preference.isChecked()){
+                    isChecked =true;
+                }
+            }
+
+            if ((apnList.getPreferenceCount() != 0) && (isChecked == false)){
+                ApnPreference pref = (ApnPreference) apnList.getPreference(0);
+                pref.setChecked();
+                Log.d(TAG, "find select key = " + mSelectedKey);
+            }
 
             for (Preference preference : mmsApnList) {
                 apnList.addPreference(preference);
