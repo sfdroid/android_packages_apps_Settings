@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemProperties;
+import android.os.UserHandle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
@@ -169,7 +170,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         intentFilter.addAction(TelephonyIntents.ACTION_SUBINFO_RECORD_UPDATED);
         intentFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
 
-        getActivity().registerReceiver(mDdsSwitchReceiver, intentFilter);
+        getActivity().registerReceiverAsUser(mDdsSwitchReceiver, UserHandle.ALL, intentFilter, null, null);
     }
 
     @Override

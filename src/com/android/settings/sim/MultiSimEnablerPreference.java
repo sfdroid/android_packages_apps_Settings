@@ -42,6 +42,7 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Message;
+import android.os.UserHandle;
 import android.preference.Preference;
 import android.provider.BaseColumns;
 import android.provider.Settings;
@@ -308,8 +309,7 @@ public class MultiSimEnablerPreference extends Preference implements OnCheckedCh
         } else {
             SubscriptionManager.deactivateSubId(mSir.getSubscriptionId());
         }
-
-        mContext.registerReceiver(mReceiver, mIntentFilter);
+        mContext.registerReceiverAsUser(mReceiver, UserHandle.ALL, mIntentFilter, null, null);
     }
 
     private void processSetUiccDone() {
