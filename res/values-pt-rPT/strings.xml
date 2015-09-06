@@ -2403,7 +2403,7 @@
     <string name="lock_screen_notifications_summary_hide" msgid="7891552853357258782">"Ocultar notificações sensíveis"</string>
     <string name="lock_screen_notifications_summary_disable" msgid="3001013816427963576">"Não mostrar notificações"</string>
     <string name="lock_screen_notifications_interstitial_message" msgid="6164532459432182244">"Como pretende que as notificações sejam apresentadas quando o dispositivo está bloqueado?"</string>
-    <string name="app_notifications_title" msgid="5810577805218003760">"Notificações de aplicações"</string>
+    <string name="app_notifications_title" msgid="5810577805218003760">"Notificações"</string>
     <string name="other_sound_settings" msgid="3151004537006844718">"Outros sons"</string>
     <string name="dial_pad_tones_title" msgid="1999293510400911558">"Sons do teclado"</string>
     <string name="screen_locking_sounds_title" msgid="1340569241625989837">"Sons de bloqueio de ecrã"</string>

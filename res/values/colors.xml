@@ -80,4 +80,9 @@
     <color name="wifi_divider">#ffe0e0e0</color>
     <color name="sim_noitification">@*android:color/material_deep_teal_500</color>
 
+
+    <color name="tsw_grey_dark">#333333</color>
+    <color name="tsw_blue">#2AA9E0</color>
+    <color name="tsw_green">#92B851</color>
+
 </resources>

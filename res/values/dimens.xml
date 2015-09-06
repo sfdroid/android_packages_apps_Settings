@@ -231,4 +231,14 @@
     <dimen name="color_swatch_size">16dp</dimen>
     <dimen name="color_swatch_stroke_width">4dp</dimen>
 
+    <!-- Notifications triple toggle -->
+    <dimen name="notification_switch_width">60dp</dimen>
+    <dimen name="notification_triple_switch_width">64dp</dimen>
+    <dimen name="notification_triple_switch_background_width">54dp</dimen>
+    <dimen name="notification_triple_switch_background_height">14dp</dimen>
+    <dimen name="notification_triple_switch_background_margin_top">7dp</dimen>
+    <dimen name="notification_triple_switch_background_margin_left">5dp</dimen>
+    <dimen name="notification_triple_switch_toggle_size">31dp</dimen>
+    <dimen name="notification_triple_switch_toggle_gap">-14dp</dimen>
+
 </resources>

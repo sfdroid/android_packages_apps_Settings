@@ -1981,7 +1981,12 @@
         <activity android:name="Settings$NotificationAppListActivity"
                 android:label="@string/app_notifications_title"
                 android:exported="true"
+                android:icon="@mipmap/notifications"
                 android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
                 android:value="com.android.settings.notification.NotificationAppList" />
             <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"

@@ -2405,7 +2405,7 @@
     <string name="lock_screen_notifications_summary_hide" msgid="7891552853357258782">"Sensible Benachrichtigungsinhalte ausblenden"</string>
     <string name="lock_screen_notifications_summary_disable" msgid="3001013816427963576">"Keine Benachrichtigungen anzeigen"</string>
     <string name="lock_screen_notifications_interstitial_message" msgid="6164532459432182244">"Wie sollen Benachrichtigungen angezeigt werden, wenn Ihr Gerät gesperrt ist?"</string>
-    <string name="app_notifications_title" msgid="5810577805218003760">"App-Benachrichtigungen"</string>
+    <string name="app_notifications_title" msgid="5810577805218003760">"Benachrichtigungen"</string>
     <string name="other_sound_settings" msgid="3151004537006844718">"Andere Töne"</string>
     <string name="dial_pad_tones_title" msgid="1999293510400911558">"Wähltastentöne"</string>
     <string name="screen_locking_sounds_title" msgid="1340569241625989837">"Töne für die Displaysperre"</string>
