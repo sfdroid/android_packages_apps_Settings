@@ -29,6 +29,7 @@
         android:divider="#0000"
         android:dividerHeight="0px"
         android:fastScrollEnabled="true"
+        android:verticalScrollbarPosition="left"
         android:listSelector="#0000"
         android:scrollbarStyle="outsideInset" />
 
