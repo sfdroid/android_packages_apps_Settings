@@ -17,13 +17,17 @@
 package com.android.settings.dashboard;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.hardware.usb.UsbManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -70,6 +74,7 @@ public class SearchResultsSummary extends Fragment {
 
     private boolean mShowResults;
 
+    private static boolean mIsUsbConnected = false;
     /**
      * A basic AsyncTask for updating the query results cursor
      */
@@ -89,6 +94,16 @@ public class SearchResultsSummary extends Fragment {
             }
         }
     }
+
+    private final BroadcastReceiver mMediaScannerReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (UsbManager.ACTION_USB_STATE.equals(action)) {
+                mIsUsbConnected = intent.getBooleanExtra(UsbManager.USB_CONNECTED, false);
+                }
+            }
+    };
 
     /**
      * A basic AsyncTask for updating the suggestions cursor
@@ -135,6 +150,13 @@ public class SearchResultsSummary extends Fragment {
 
         clearSuggestions();
         clearResults();
+    }
+
+    @Override
+    public void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        getActivity().unregisterReceiver(mMediaScannerReceiver);
     }
 
     @Override
@@ -251,6 +273,10 @@ public class SearchResultsSummary extends Fragment {
         if (!mShowResults) {
             showSomeSuggestions();
         }
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_SCANNER_STARTED);
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(UsbManager.ACTION_USB_STATE);
+        getActivity().registerReceiver(mMediaScannerReceiver, intentFilter);
     }
 
     public void setSearchView(SearchView searchView) {
@@ -607,6 +633,10 @@ public class SearchResultsSummary extends Fragment {
             imageView = (ImageView) view.findViewById(R.id.icon);
 
             final SearchResult result = (SearchResult) getItem(position);
+            if (!mIsUsbConnected && "USB computer connection".equals(result.title)){
+                textTitle.setTextColor(Color.GRAY);
+                view.setEnabled(false);
+            }
             textTitle.setText(result.title);
 
             if (result.iconResId != R.drawable.empty_icon) {
