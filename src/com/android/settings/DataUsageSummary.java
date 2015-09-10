@@ -661,16 +661,20 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
         if (hasReadyMobile4gRadio(context)) {
             mTabHost.addTab(buildTabSpec(TAB_3G, R.string.data_usage_tab_3g));
             mTabHost.addTab(buildTabSpec(TAB_4G, R.string.data_usage_tab_4g));
-        } else if (hasReadyMobileRadio(context)) {
-            int phoneCount = TelephonyManager.getDefault().getPhoneCount();
-            if (phoneCount > 1) {
-                for (int i = 0; i < phoneCount; i++) {
-                    mTabHost.addTab(buildTabSpec(getSubTag(i+1), getSubTitle(i+1)));
+        }
+        int phoneCount = TelephonyManager.getDefault().getPhoneCount();
+        if (phoneCount > 1) {
+            for (int i = 0; i < phoneCount; i++) {
+                final SubscriptionInfo sir = Utils.findRecordBySlotId(context,i);
+                if (sir == null || !hasReadyMobileRadio(context,sir.getSubscriptionId())) {
+                    continue;
+                } else {
+                    mTabHost.addTab(buildTabSpec(getSubTag(i + 1),getSubTitle(i + 1)));
                 }
-            } else {
-                mTabHost.addTab(buildTabSpec(TAB_MOBILE,
-                        R.string.data_usage_tab_mobile));
             }
+        } else {
+            mTabHost.addTab(buildTabSpec(TAB_MOBILE,
+                    R.string.data_usage_tab_mobile));
         }
         if (mShowWifi && hasWifiRadio(context)) {
             mTabHost.addTab(buildTabSpec(TAB_WIFI, R.string.data_usage_tab_wifi));
@@ -2337,6 +2341,23 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
                             + conn.isNetworkSupported(TYPE_MOBILE)
                             + " isReady=" + isReady);
         }
+        return retVal;
+    }
+
+    public static boolean hasReadyMobileRadio(Context context, int subId) {
+        if (TEST_RADIOS) {
+            return SystemProperties.get(TEST_RADIOS_PROP).contains("mobile");
+        }
+
+        final ConnectivityManager conn = ConnectivityManager.from(context);
+        final TelephonyManager tele = TelephonyManager.from(context);
+        final int slotId = SubscriptionManager.getSlotId(subId);
+        final boolean isReady = tele.getSimState(slotId) == SIM_STATE_READY;
+
+        boolean retVal =  conn.isNetworkSupported(TYPE_MOBILE) && isReady;
+        if (LOGD) Log.d(TAG, "hasReadyMobileRadio: subId=" + subId
+                + " conn.isNetworkSupported(TYPE_MOBILE)=" + conn.isNetworkSupported(TYPE_MOBILE)
+                + " isReady=" + isReady);
         return retVal;
     }
 
