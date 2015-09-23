@@ -254,8 +254,8 @@ public class NotificationAppList extends PinnedHeaderListFragment
             if (!(r instanceof AppRow)) {
                 return mInflater.inflate(R.layout.notification_app_section, parent, false);
             }
-            final View v = mInflater.inflate(R.layout.notification_app, parent, false);
-            final ViewHolder vh = new ViewHolder();
+            View v = mInflater.inflate(R.layout.notification_app, parent, false);
+            ViewHolder vh = new ViewHolder();
             vh.row = (ViewGroup) v;
             vh.row.setLayoutTransition(new LayoutTransition());
             vh.row.setLayoutTransition(new LayoutTransition());
@@ -263,8 +263,7 @@ public class NotificationAppList extends PinnedHeaderListFragment
             vh.title = (TextView) v.findViewById(android.R.id.title);
             vh.subtitle = (TextView) v.findViewById(android.R.id.text1);
             vh.rowDivider = v.findViewById(R.id.row_divider);
-            final AppRow row = (AppRow)r;
-            new TripleSwitchView(mContext, v.findViewById(R.id.triple_switch_group), vh.subtitle, row.pkg, row.uid);
+            AppRow row = (AppRow)r;
             v.setTag(vh);
             return v;
         }
@@ -279,29 +278,36 @@ public class NotificationAppList extends PinnedHeaderListFragment
             }
         }
 
-        public void bindView(final View view, Row r, boolean animate) {
+        public void bindView(View view, Row r, boolean animate) {
             if (!(r instanceof AppRow)) {
                 // it's a section row
-                final TextView tv = (TextView)view.findViewById(android.R.id.title);
+                TextView tv = (TextView)view.findViewById(android.R.id.title);
                 tv.setText(r.section);
                 return;
             }
 
-            final AppRow row = (AppRow)r;
-            final ViewHolder vh = (ViewHolder) view.getTag();
+            AppRow row = (AppRow)r;
+            ViewHolder vh = (ViewHolder) view.getTag();
             enableLayoutTransitions(vh.row, animate);
             vh.rowDivider.setVisibility(row.first ? View.GONE : View.VISIBLE);
-            /*vh.row.setOnClickListener(new OnClickListener() {
+            vh.row.setOnLongClickListener(new View.OnLongClickListener() {
+                private AppRow mRow;
+                public View.OnLongClickListener setup(AppRow r) {
+                    mRow = r;
+                    return this;
+                }
                 @Override
-                public void onClick(View v) {
+                public boolean onLongClick(View v) {
                     mContext.startActivity(new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                            .putExtra(Settings.EXTRA_APP_PACKAGE, row.pkg)
-                            .putExtra(Settings.EXTRA_APP_UID, row.uid)
-                            .putExtra(EXTRA_HAS_SETTINGS_INTENT, row.settingsIntent != null)
-                            .putExtra(EXTRA_SETTINGS_INTENT, row.settingsIntent));
+                            .putExtra(Settings.EXTRA_APP_PACKAGE, mRow.pkg)
+                            .putExtra(Settings.EXTRA_APP_UID, mRow.uid)
+                            .putExtra(EXTRA_HAS_SETTINGS_INTENT, mRow.settingsIntent != null)
+                            .putExtra(EXTRA_SETTINGS_INTENT, mRow.settingsIntent));
+                    return true;
                 }
-            });*/
+            }.setup(row));
+            new TripleSwitchView(mContext, view.findViewById(R.id.triple_switch_group), vh.subtitle, row.pkg, row.uid);
             enableLayoutTransitions(vh.row, animate);
             vh.icon.setImageDrawable(row.icon);
             vh.title.setText(row.label);

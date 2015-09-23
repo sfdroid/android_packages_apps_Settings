@@ -26,7 +26,7 @@ public class TripleSwitchView {
     private ToggleButton mPriorityToggleButton;
     private TextView mStatusText;
 
-    private Toast mToast;
+    private static Toast sToast;
 
     private NotificationAppList.Backend mBackend = new NotificationAppList.Backend();
 
@@ -56,52 +56,54 @@ public class TripleSwitchView {
         mPriorityToggleButton = (ToggleButton) mTripleSwitchGroup.findViewById(R.id.priority_toggle_button);
 
         setCurrentTripleSwitchState();
-
-        mOffToggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeTripleSwitchState();
-            }
-        });
-        mOnToggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeTripleSwitchState();
-            }
-        });
-        mPriorityToggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeTripleSwitchState();
-            }
-        });
-
-        ((View)mStatusText.getParent()).setOnClickListener(new View.OnClickListener() {
+        
+        View.OnClickListener triggerToast = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Resources resources = mContext.getResources();
-                if (mToast != null) {
-                    mToast.cancel();
+                if (sToast != null) {
+                    sToast.cancel();
                 }
                 switch (mCurrentTripleSwitchState) {
                     case ON:
-                        mToast = Toast.makeText(mContext, resources.getString(R.string.notifications_on).toUpperCase() + "\n" + resources.getString(R.string.notifications_on_description), Toast.LENGTH_SHORT);
-                        mToast.show();
+                        sToast = Toast.makeText(mContext, resources.getString(R.string.notifications_on).toUpperCase() + "\n" + resources.getString(R.string.notifications_on_description), Toast.LENGTH_SHORT);
+                        sToast.show();
                         break;
                     case OFF:
-                        mToast = Toast.makeText(mContext, resources.getString(R.string.notifications_off).toUpperCase() + "\n" + resources.getString(R.string.notifications_off_description), Toast.LENGTH_SHORT);
-                        mToast.show();
+                        sToast = Toast.makeText(mContext, resources.getString(R.string.notifications_off).toUpperCase() + "\n" + resources.getString(R.string.notifications_off_description), Toast.LENGTH_SHORT);
+                        sToast.show();
                         break;
                     case PRIORITY:
-                        mToast = Toast.makeText(mContext, resources.getString(R.string.notifications_priority).toUpperCase() + "\n" + resources.getString(R.string.notifications_priority_description), Toast.LENGTH_SHORT);
-                        mToast.show();
+                        sToast = Toast.makeText(mContext, resources.getString(R.string.notifications_priority).toUpperCase() + "\n" + resources.getString(R.string.notifications_priority_description), Toast.LENGTH_SHORT);
+                        sToast.show();
                         break;
                     default:
                         Log.wtf(TAG, "Unknow triple switch state: " + mCurrentTripleSwitchState);
                         break;
                 }
             }
-        });
+        };
+        
+        View.OnClickListener updateTripleState = new View.OnClickListener() {
+            private View.OnClickListener mExtraAction;
+            public View.OnClickListener setup(View.OnClickListener extra){
+                mExtraAction = extra;
+                return this;
+            }
+            @Override
+            public void onClick(View v) {
+                changeTripleSwitchState();
+                if (mExtraAction != null) {
+                    mExtraAction.onClick(v);
+                }
+            }
+        }.setup(triggerToast);
+
+        mOffToggleButton.setOnClickListener(updateTripleState);
+        mOnToggleButton.setOnClickListener(updateTripleState);
+        mPriorityToggleButton.setOnClickListener(updateTripleState);
+        
+        ((View)mStatusText.getParent()).setOnClickListener(triggerToast);
     }
 
     private void changeTripleSwitchState() {
