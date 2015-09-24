@@ -702,6 +702,9 @@ public class InstalledAppDetails extends Fragment
             return false; // onCreate must have failed, make sure to exit
         }
 
+        if (mRootView == null) {
+            return false;
+        }
         // Get list of "home" apps and trace through any meta-data references
         List<ResolveInfo> homeActivities = new ArrayList<ResolveInfo>();
         mPm.getHomeActivities(homeActivities);
@@ -1081,7 +1084,7 @@ public class InstalledAppDetails extends Fragment
     }
 
     /*
-     * Private method to initiate clearing user data when the user clicks the clear data 
+     * Private method to initiate clearing user data when the user clicks the clear data
      * button for a system package
      */
     private  void initiateClearUserData() {
