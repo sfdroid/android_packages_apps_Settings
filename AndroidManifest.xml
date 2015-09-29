@@ -1442,7 +1442,8 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".bluetooth.DockService" />
+	<service android:name=".bluetooth.DockService"
+	    android:exported="true" />
 
         <activity android:name=".bluetooth.RequestPermissionActivity"
                   android:label="@string/bluetooth_permission_request"
