@@ -25,6 +25,11 @@
                     android:targetPackage="com.fairphone.updater"
                     android:targetClass="com.fairphone.updater.FairphoneUpdater" />
         </PreferenceScreen>
+        <PreferenceScreen android:key="system_privacy_impact_settings">
+                <intent android:action="android.intent.action.MAIN"
+                        android:targetPackage="com.fairphone.privacyimpact"
+                        android:targetClass="com.fairphone.privacyimpact.PrivacyImpactPreferenceActivity" />
+        </PreferenceScreen>
 
 
         <!--PreferenceScreen android:key="additional_system_update_settings"
