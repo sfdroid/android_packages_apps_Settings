@@ -85,11 +85,20 @@
                 android:fragment="com.android.settings.notification.OtherSoundSettings" />
 
     </PreferenceCategory>
-
+     
+    <PreferenceScreen
+        android:key="system_privacy_impact_settings"
+        android:title="@string/privacy_impact_title">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.fairphone.privacyimpact"
+            android:targetClass="com.fairphone.privacyimpact.PrivacyImpactPreferenceActivity" />
+    </PreferenceScreen>
+        
     <PreferenceCategory
         android:key="notification"
         android:title="@string/notification_section_header" >
-
+           
         <!-- Pulse notification light -->
         <SwitchPreference
                 android:key="notification_pulse"
