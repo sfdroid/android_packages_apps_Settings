@@ -59,6 +59,17 @@ import com.android.settings.Utils;
 
 import java.lang.ref.WeakReference;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import android.util.Log;
+import java.io.File;
+
+
+
+
 /**
  * Display the following information
  * # Phone Number
@@ -373,7 +384,7 @@ public class Status extends PreferenceActivity {
 
         updateConnectivity();
 
-        String serial = Build.SERIAL;
+        String serial =getSerialNo();
         if (serial != null && !serial.equals("")) {
             setSummaryText(KEY_SERIAL_NUMBER, serial);
         } else {
@@ -662,5 +673,34 @@ public class Status extends PreferenceActivity {
 
     private boolean isMultiSimEnabled() {
         return (TelephonyManager.getDefault().getPhoneCount() > 1);
+    }
+    private String getSerialNo(){
+        String serialNo =null;
+        FileInputStream input =null;
+        try {
+	     File file = new File("/persist/phoneid.bin");
+            input = new FileInputStream(file);
+            int len = input.available();
+
+            final byte[] bytes = new byte[len];
+            input.read(bytes);
+            serialNo = new String(bytes, "ASCII");
+        }catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }catch(IOException e2) {  
+            e2.printStackTrace();
+        }finally {
+            try {		
+                if (input != null) {
+                    input.close();
+                } 
+            } catch (Exception e3) {       
+    		e3.printStackTrace();        
+            }       
+        }
+        if (serialNo == null){
+            serialNo = new String("RAF00000");
+        }
+        return serialNo;
     }
 }
