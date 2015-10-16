@@ -40,6 +40,8 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.telecom.PhoneAccount;
+import android.telecom.PhoneAccountHandle;
+import android.telecom.TelecomManager;
 import android.telephony.CellInfo;
 import android.telephony.PhoneStateListener;
 import android.text.TextUtils;
@@ -61,6 +63,9 @@ import com.android.settings.search.Indexable.SearchIndexProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
+
+
 /*Author:zhaoliyuan
 	Date:2015.07.21
 	Comment: Big change on the Preferred SIM process
@@ -594,8 +599,21 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                     if (subId == 0) {
                         mSubscriptionManager.setVoicePromptEnabled(true);
                     } else {
-                        mSubscriptionManager.setVoicePromptEnabled(false);
+                        if (!(hasNumIccCard() == 1)) {
+                            mSubscriptionManager.setVoicePromptEnabled(false);
+                        }
                         if (mSubscriptionManager.getDefaultVoiceSubId() != subId) {
+                            if (!(hasNumIccCard() == 1)){
+                                PhoneAccountHandle selectedPhoneAccountHandle=getUserSelectedOutgoingPhoneAccount();
+                                if (selectedPhoneAccountHandle != null){
+                                    String Id = selectedPhoneAccountHandle.getId();
+                                    if (!(Id.contains("@"))){
+                                        PhoneAccountHandle phoneAccountHandle =
+                                            subscriptionIdToPhoneAccountHandle(subId);
+                                        setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
+                                    }
+                                }
+                            }
                             mSubscriptionManager.setDefaultVoiceSubId(subId);
                         }
                     }
@@ -843,7 +861,15 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                     mSubscriptionManager.setDefaultDataSubId(SubId);
 		     mSubscriptionManager.setSMSPromptEnabled(false);
                     mSubscriptionManager.setDefaultSmsSubId(SubId);
-		     mSubscriptionManager.setVoicePromptEnabled(false);
+                    PhoneAccountHandle selectedPhoneAccountHandle = getUserSelectedOutgoingPhoneAccount();
+                    if (selectedPhoneAccountHandle != null){
+                        String Id = selectedPhoneAccountHandle.getId();
+                        if (!(Id.contains("@")) && !mSubscriptionManager.isVoicePromptEnabled()){
+                            PhoneAccountHandle phoneAccountHandle =
+                                subscriptionIdToPhoneAccountHandle(SubId);
+                            setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
+                        }
+                    }
                     mSubscriptionManager.setDefaultVoiceSubId(SubId);
                 }else{
                     Log.d(TAG, "Do not hasIccCard,SlotId = " + SlotId);
@@ -860,6 +886,15 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
              mSubscriptionManager.setSMSPromptEnabled(false);
              mSubscriptionManager.setDefaultSmsSubId(SubId);
              mSubscriptionManager.setVoicePromptEnabled(false);
+             PhoneAccountHandle selectedPhoneAccountHandle=getUserSelectedOutgoingPhoneAccount();
+             if (selectedPhoneAccountHandle != null){
+                 String Id = selectedPhoneAccountHandle.getId();
+                 if (!(Id.contains("@"))){
+                     PhoneAccountHandle phoneAccountHandle =
+                         subscriptionIdToPhoneAccountHandle(SubId);
+                     setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
+                 }
+             }
              mSubscriptionManager.setDefaultVoiceSubId(SubId);
              return;
 	 }
@@ -901,5 +936,36 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             }
         }
         return -1;
+    }
+
+    private void setUserSelectedOutgoingPhoneAccount(final Context context,PhoneAccountHandle phoneAccount) {
+        final TelecomManager telecomManager = TelecomManager.from(getActivity());
+        final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+        telecomManager.setUserSelectedOutgoingPhoneAccount(phoneAccount);
+    }
+    private PhoneAccountHandle getUserSelectedOutgoingPhoneAccount(){
+        final TelecomManager telecomManager = TelecomManager.from(getActivity());
+        final SubscriptionManager subscriptionManager = SubscriptionManager.from(getActivity());
+        return telecomManager.getUserSelectedOutgoingPhoneAccount();
+    }
+
+    private PhoneAccountHandle subscriptionIdToPhoneAccountHandle(final int subId) {
+        final TelecomManager telecomManager = TelecomManager.from(getActivity());
+        final Iterator<PhoneAccountHandle> phoneAccounts =
+        telecomManager.getCallCapablePhoneAccounts().listIterator();
+
+        while (phoneAccounts.hasNext()) {
+            final PhoneAccountHandle phoneAccountHandle = phoneAccounts.next();
+            final PhoneAccount phoneAccount = telecomManager.getPhoneAccount(phoneAccountHandle);
+            final String phoneAccountId = phoneAccountHandle.getId();
+
+            if (phoneAccount.hasCapabilities(PhoneAccount.CAPABILITY_SIM_SUBSCRIPTION)
+                && TextUtils.isDigitsOnly(phoneAccountId)
+                && Integer.parseInt(phoneAccountId) == subId){
+                return phoneAccountHandle;
+            }
+        }
+
+        return null;
     }
 }
