@@ -1000,22 +1000,26 @@ public class InstalledAppDetails extends Fragment
                     mExternalDataSize.setText(getSizeStr( mAppEntry.externalDataSize));
                 }
             }
-            if (mLastCodeSize != codeSize) {
-                mLastCodeSize = codeSize;
-                mAppSize.setText(getSizeStr(codeSize));
-            }
-            if (mLastDataSize != dataSize) {
-                mLastDataSize = dataSize;
-                mDataSize.setText(getSizeStr(dataSize));
-            }
             long cacheSize = mAppEntry.cacheSize + mAppEntry.externalCacheSize;
-            if (mLastCacheSize != cacheSize) {
-                mLastCacheSize = cacheSize;
-                mCacheSize.setText(getSizeStr(cacheSize));
-            }
-            if (mLastTotalSize != mAppEntry.size) {
-                mLastTotalSize = mAppEntry.size;
-                mTotalSize.setText(getSizeStr(mAppEntry.size));
+            try{
+                if (mLastCodeSize != codeSize) {
+                    mLastCodeSize = codeSize;
+                    mAppSize.setText(getSizeStr(codeSize));
+                }
+                if (mLastDataSize != dataSize) {
+                    mLastDataSize = dataSize;
+                    mDataSize.setText(getSizeStr(dataSize));
+                }
+                if (mLastCacheSize != cacheSize) {
+                    mLastCacheSize = cacheSize;
+                    mCacheSize.setText(getSizeStr(cacheSize));
+                }
+                if (mLastTotalSize != mAppEntry.size) {
+                    mLastTotalSize = mAppEntry.size;
+                    mTotalSize.setText(getSizeStr(mAppEntry.size));
+                }
+            }catch(NullPointerException e){
+                Log.e(TAG, "refreshSizeInfo", e);
             }
             
             if ((mAppEntry.dataSize+ mAppEntry.externalDataSize) <= 0 || !mCanClearData) {
