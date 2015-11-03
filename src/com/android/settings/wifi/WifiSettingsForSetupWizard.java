@@ -161,6 +161,7 @@ public class WifiSettingsForSetupWizard extends WifiSettings {
     }
 
     protected void updateFooter() {
+        if (getView() == null) return;
         final boolean isEmpty = mAdapter.isEmpty();
         if (isEmpty != mListLastEmpty) {
             final ListView list = getListView();
