@@ -18,6 +18,7 @@ package com.android.settings;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,8 @@ public class LocalePicker extends com.android.internal.app.LocalePicker
             getActivity().onBackPressed();
             LocalePicker.updateLocale(locale);
         }
+        Settings.System.putString(getActivity().getContentResolver(), Settings.System.DATE_FORMAT,
+                null);
     }
 
     @Override
