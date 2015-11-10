@@ -1004,33 +1004,57 @@ public class InstalledAppDetails extends Fragment
             try{
                 if (mLastCodeSize != codeSize) {
                     mLastCodeSize = codeSize;
+                    if (mAppSize == null){
+                        return;
+                    }
                     mAppSize.setText(getSizeStr(codeSize));
                 }
                 if (mLastDataSize != dataSize) {
                     mLastDataSize = dataSize;
+                    if (mDataSize == null){
+                        return;
+                    }
                     mDataSize.setText(getSizeStr(dataSize));
                 }
                 if (mLastCacheSize != cacheSize) {
                     mLastCacheSize = cacheSize;
+                    if (mCacheSize == null){
+                        return;
+                    }
                     mCacheSize.setText(getSizeStr(cacheSize));
                 }
                 if (mLastTotalSize != mAppEntry.size) {
                     mLastTotalSize = mAppEntry.size;
+                    if (mTotalSize == null){
+                        return;
+                    }
                     mTotalSize.setText(getSizeStr(mAppEntry.size));
                 }
             }catch(NullPointerException e){
                 Log.e(TAG, "refreshSizeInfo", e);
             }
-            
+
             if ((mAppEntry.dataSize+ mAppEntry.externalDataSize) <= 0 || !mCanClearData) {
+                if (mClearDataButton == null){
+                    return;
+                }
                 mClearDataButton.setEnabled(false);
             } else {
+                if (mClearDataButton == null){
+                    return;
+                }
                 mClearDataButton.setEnabled(true);
                 mClearDataButton.setOnClickListener(this);
             }
             if (cacheSize <= 0) {
+                if (mClearCacheButton == null){
+                    return;
+                }
                 mClearCacheButton.setEnabled(false);
             } else {
+                if (mClearCacheButton == null){
+                    return;
+                }
                 mClearCacheButton.setEnabled(true);
                 mClearCacheButton.setOnClickListener(this);
             }
@@ -1040,7 +1064,7 @@ public class InstalledAppDetails extends Fragment
             mClearDataButton.setEnabled(false);
         }
     }
-    
+
     /*
      * Private method to handle clear message notification from observer when
      * the async operation from PackageManager is complete
