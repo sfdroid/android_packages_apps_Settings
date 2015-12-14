@@ -598,21 +598,16 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                     //subId 0 is meant for "Ask First"/"Prompt" option as per AOSP
                     if (subId == 0) {
                         mSubscriptionManager.setVoicePromptEnabled(true);
+                        setUserSelectedOutgoingPhoneAccount(getActivity(),null);
                     } else {
                         if (!(hasNumIccCard() == 1)) {
                             mSubscriptionManager.setVoicePromptEnabled(false);
                         }
                         if (mSubscriptionManager.getDefaultVoiceSubId() != subId) {
                             if (!(hasNumIccCard() == 1)){
-                                PhoneAccountHandle selectedPhoneAccountHandle=getUserSelectedOutgoingPhoneAccount();
-                                if (selectedPhoneAccountHandle != null){
-                                    String Id = selectedPhoneAccountHandle.getId();
-                                    if (!(Id.contains("@"))){
-                                        PhoneAccountHandle phoneAccountHandle =
-                                            subscriptionIdToPhoneAccountHandle(subId);
-                                        setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
-                                    }
-                                }
+                                PhoneAccountHandle phoneAccountHandle =
+                                        subscriptionIdToPhoneAccountHandle(subId);
+                                setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
                             }
                             mSubscriptionManager.setDefaultVoiceSubId(subId);
                         }
@@ -861,15 +856,12 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                     mSubscriptionManager.setDefaultDataSubId(SubId);
 		     mSubscriptionManager.setSMSPromptEnabled(false);
                     mSubscriptionManager.setDefaultSmsSubId(SubId);
-                    PhoneAccountHandle selectedPhoneAccountHandle = getUserSelectedOutgoingPhoneAccount();
-                    if (selectedPhoneAccountHandle != null){
-                        String Id = selectedPhoneAccountHandle.getId();
-                        if (!(Id.contains("@")) && !mSubscriptionManager.isVoicePromptEnabled()){
-                            PhoneAccountHandle phoneAccountHandle =
-                                subscriptionIdToPhoneAccountHandle(SubId);
-                            setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
-                        }
-                    }
+                    mSubscriptionManager.setVoicePromptEnabled(false);
+
+                    PhoneAccountHandle phoneAccountHandle =
+                            subscriptionIdToPhoneAccountHandle(SubId);
+                    setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
+
                     mSubscriptionManager.setDefaultVoiceSubId(SubId);
                 }else{
                     Log.d(TAG, "Do not hasIccCard,SlotId = " + SlotId);
@@ -886,15 +878,10 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
              mSubscriptionManager.setSMSPromptEnabled(false);
              mSubscriptionManager.setDefaultSmsSubId(SubId);
              mSubscriptionManager.setVoicePromptEnabled(false);
-             PhoneAccountHandle selectedPhoneAccountHandle=getUserSelectedOutgoingPhoneAccount();
-             if (selectedPhoneAccountHandle != null){
-                 String Id = selectedPhoneAccountHandle.getId();
-                 if (!(Id.contains("@"))){
-                     PhoneAccountHandle phoneAccountHandle =
-                         subscriptionIdToPhoneAccountHandle(SubId);
-                     setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
-                 }
-             }
+             PhoneAccountHandle phoneAccountHandle =
+                     subscriptionIdToPhoneAccountHandle(SubId);
+             setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
+
              mSubscriptionManager.setDefaultVoiceSubId(SubId);
              return;
 	 }
