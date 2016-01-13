@@ -852,17 +852,19 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 		    int SlotId = i;
                 if (tm.hasIccCard(i)) {
                     SubscriptionInfo  SubscriptionInfo =findRecordBySlotId(i);
-                    int SubId = SubscriptionInfo.getSubscriptionId();
-                    mSubscriptionManager.setDefaultDataSubId(SubId);
-		     mSubscriptionManager.setSMSPromptEnabled(false);
-                    mSubscriptionManager.setDefaultSmsSubId(SubId);
-                    mSubscriptionManager.setVoicePromptEnabled(false);
+                    if (SubscriptionInfo != null){
+                        int SubId = SubscriptionInfo.getSubscriptionId();
+                        mSubscriptionManager.setDefaultDataSubId(SubId);
+                        mSubscriptionManager.setSMSPromptEnabled(false);
+                        mSubscriptionManager.setDefaultSmsSubId(SubId);
+                        mSubscriptionManager.setVoicePromptEnabled(false);
 
-                    PhoneAccountHandle phoneAccountHandle =
-                            subscriptionIdToPhoneAccountHandle(SubId);
-                    setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
+                        PhoneAccountHandle phoneAccountHandle =
+                                subscriptionIdToPhoneAccountHandle(SubId);
+                        setUserSelectedOutgoingPhoneAccount(getActivity(),phoneAccountHandle);
 
-                    mSubscriptionManager.setDefaultVoiceSubId(SubId);
+                        mSubscriptionManager.setDefaultVoiceSubId(SubId);
+                    }
                 }else{
                     Log.d(TAG, "Do not hasIccCard,SlotId = " + SlotId);
                 }
