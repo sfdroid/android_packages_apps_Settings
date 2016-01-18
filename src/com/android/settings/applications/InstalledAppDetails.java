@@ -26,6 +26,7 @@ import com.android.settings.applications.ApplicationsState.AppEntry;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.AppOpsManager;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -56,6 +57,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.SpannableString;
@@ -82,6 +84,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -101,7 +104,8 @@ public class InstalledAppDetails extends Fragment
     private static final boolean localLOGV = false;
     
     public static final String ARG_PACKAGE_NAME = "package";
-
+    private static final String ROOT_ACCESS_PROPERTY = "persist.sys.root_access";
+    
     private PackageManager mPm;
     private UserManager mUserManager;
     private IUsbManager mUsbManager;
@@ -142,6 +146,11 @@ public class InstalledAppDetails extends Fragment
     private Button mClearDataButton;
     private Button mMoveAppButton;
     private CompoundButton mNotificationSwitch;
+    
+    private RadioButton mSuAskRadioButton;
+    private RadioButton mSuAllowedRadioButton;
+    private RadioButton mSuDeniedRadioButton;
+    private View mSuperUserSettingsLayout;
 
     private PackageMoveObserver mPackageMoveObserver;
 
@@ -428,6 +437,31 @@ public class InstalledAppDetails extends Fragment
             mNotificationSwitch.setOnCheckedChangeListener(this);
         }
     }
+    
+    private void initSuperuserButtons() {
+      Context c =mSuAllowedRadioButton.getContext();
+      AppOpsManager appOpsManager = (AppOpsManager) c.getSystemService(Context.APP_OPS_SERVICE);
+      int mode = appOpsManager.checkOpNoThrow(AppOpsManager.OP_SU, mAppEntry.info.uid, mAppEntry.info.packageName);
+      switch (mode) {
+        case AppOpsManager.MODE_ALLOWED:
+          mSuAllowedRadioButton.setChecked(true);
+          break;
+        case AppOpsManager.MODE_ERRORED:
+        case AppOpsManager.MODE_IGNORED:
+          mSuDeniedRadioButton.setChecked(true);
+          break;
+        case AppOpsManager.MODE_ASK:
+        default:
+          mSuAskRadioButton.setChecked(true);
+      }
+      mSuAskRadioButton.setOnClickListener(this);
+      mSuAllowedRadioButton.setOnClickListener(this);
+      mSuDeniedRadioButton.setOnClickListener(this);
+      String value = SystemProperties.get(ROOT_ACCESS_PROPERTY, "1");
+      if (value.equals("0") || value.equals("2")) {
+        mSuperUserSettingsLayout.setVisibility(View.GONE);
+      }
+    }
 
     /** Called when the activity is first created. */
     @Override
@@ -508,6 +542,11 @@ public class InstalledAppDetails extends Fragment
         
         mNotificationSwitch = (CompoundButton) view.findViewById(R.id.notification_switch);
 
+        mSuAskRadioButton     = (RadioButton) view.findViewById(R.id.askRadioButton);
+        mSuAllowedRadioButton = (RadioButton) view.findViewById(R.id.alwaysRadioButton);
+        mSuDeniedRadioButton  = (RadioButton) view.findViewById(R.id.neverRadioButton);
+        mSuperUserSettingsLayout = (View) view.findViewById(R.id.superUserLinearLayout);
+        
         return view;
     }
 
@@ -1088,6 +1127,7 @@ public class InstalledAppDetails extends Fragment
             initDataButtons();
             initMoveButton();
             initNotificationButton();
+            initSuperuserButtons();
         } else {
             mMoveAppButton.setText(R.string.moving);
             mMoveAppButton.setEnabled(false);
@@ -1455,6 +1495,24 @@ public class InstalledAppDetails extends Fragment
             mMoveInProgress = true;
             refreshButtons();
             mPm.movePackage(mAppEntry.info.packageName, mPackageMoveObserver, moveFlags);
+        } else if (v == mSuAskRadioButton) {
+          mSuAskRadioButton.setChecked(true);
+          Context c =mSuAllowedRadioButton.getContext();
+          AppOpsManager appOpsManager = (AppOpsManager) c.getSystemService(Context.APP_OPS_SERVICE);
+          appOpsManager.setMode(AppOpsManager.OP_SU, mAppEntry.info.uid, mAppEntry.info.packageName,
+            AppOpsManager.MODE_ASK);
+        } else if (v == mSuDeniedRadioButton) {
+          mSuDeniedRadioButton.setChecked(true);
+          Context c =mSuAllowedRadioButton.getContext();
+          AppOpsManager appOpsManager = (AppOpsManager) c.getSystemService(Context.APP_OPS_SERVICE);
+          appOpsManager.setMode(AppOpsManager.OP_SU, mAppEntry.info.uid, mAppEntry.info.packageName,
+            AppOpsManager.MODE_ERRORED);
+        } else if (v == mSuAllowedRadioButton) {
+          mSuAllowedRadioButton.setChecked(true);
+          Context c =mSuAllowedRadioButton.getContext();
+          AppOpsManager appOpsManager = (AppOpsManager) c.getSystemService(Context.APP_OPS_SERVICE);
+          appOpsManager.setMode(AppOpsManager.OP_SU, mAppEntry.info.uid, mAppEntry.info.packageName,
+            AppOpsManager.MODE_ALLOWED);
         }
     }
 
@@ -1477,4 +1535,3 @@ public class InstalledAppDetails extends Fragment
         }
     }
 }
-
