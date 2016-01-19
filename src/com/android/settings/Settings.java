@@ -210,6 +210,14 @@ public class Settings extends PreferenceActivity
             R.id.button_settings
     };
 
+    private int[] SETTINGS_SFDROID_DISABLED = {
+            R.id.wireless_section,
+            R.id.wifi_settings,
+            R.id.bluetooth_settings,
+            R.id.data_usage_settings,
+            R.id.wireless_settings,
+    };
+
     private SharedPreferences mDevelopmentPreferences;
     private SharedPreferences.OnSharedPreferenceChangeListener mDevelopmentPreferencesListener;
 
@@ -788,6 +796,11 @@ public class Settings extends PreferenceActivity
             if (i < target.size() && target.get(i) == header
                     && UserHandle.MU_ENABLED && UserHandle.myUserId() != 0
                     && !ArrayUtils.contains(SETTINGS_FOR_RESTRICTED, id)) {
+                target.remove(i);
+            }
+
+            if(target.get(i) == header && ArrayUtils.contains(SETTINGS_SFDROID_DISABLED, id))
+            {
                 target.remove(i);
             }
 
