@@ -204,6 +204,8 @@ public class WifiSettings extends RestrictedSettingsFragment
         // Set this flag early, as it's needed by getHelpResource(), which is called by super
         mSetupWizardMode = getActivity().getIntent().getBooleanExtra(EXTRA_IS_FIRST_RUN, false);
 
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
         super.onCreate(icicle);
     }
 
