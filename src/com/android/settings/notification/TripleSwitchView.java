@@ -78,7 +78,7 @@ public class TripleSwitchView {
                         sToast.show();
                         break;
                     default:
-                        Log.wtf(TAG, "Unknow triple switch state: " + mCurrentTripleSwitchState);
+                        Log.e(TAG, "Unknow triple switch state: " + mCurrentTripleSwitchState);
                         break;
                 }
             }
@@ -135,7 +135,7 @@ public class TripleSwitchView {
                 }
                 break;
             default:
-                Log.wtf(TAG, "Unknow triple switch state: " + mCurrentTripleSwitchState);
+                Log.e(TAG, "Unknow triple switch state: " + mCurrentTripleSwitchState);
                 break;
         }
     }
