@@ -40,7 +40,7 @@ import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.INetworkManagementService;
+//import android.os.INetworkManagementService;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.RemoteException;
@@ -1238,7 +1238,7 @@ public class SettingsActivity extends Activity
                     }
                 } else if (id == R.id.data_usage_settings) {
                     // Remove data usage when kernel module not enabled
-                    final INetworkManagementService netManager = INetworkManagementService.Stub
+/*                    final INetworkManagementService netManager = INetworkManagementService.Stub
                             .asInterface(ServiceManager.getService(Context.NETWORKMANAGEMENT_SERVICE));
                     try {
                         if (!netManager.isBandwidthControlEnabled()) {
@@ -1247,6 +1247,7 @@ public class SettingsActivity extends Activity
                     } catch (RemoteException e) {
                         // ignored
                     }
+*/
                 } else if (id == R.id.battery_settings) {
                     // Remove battery settings when battery is not available. (e.g. TV)
 
