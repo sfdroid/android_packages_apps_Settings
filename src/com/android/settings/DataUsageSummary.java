@@ -79,7 +79,7 @@ import android.net.NetworkTemplate;
 import android.net.TrafficStats;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.INetworkManagementService;
+//import android.os.INetworkManagementService;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
@@ -189,7 +189,7 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
     private static final int LOADER_CHART_DATA = 2;
     private static final int LOADER_SUMMARY = 3;
 
-    private INetworkManagementService mNetworkService;
+//    private INetworkManagementService mNetworkService;
     private INetworkStatsService mStatsService;
     private NetworkPolicyManager mPolicyManager;
     private TelephonyManager mTelephonyManager;
@@ -275,8 +275,8 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
         super.onCreate(savedInstanceState);
         final Context context = getActivity();
 
-        mNetworkService = INetworkManagementService.Stub.asInterface(
-                ServiceManager.getService(Context.NETWORKMANAGEMENT_SERVICE));
+//        mNetworkService = INetworkManagementService.Stub.asInterface(
+//                ServiceManager.getService(Context.NETWORKMANAGEMENT_SERVICE));
         mStatsService = INetworkStatsService.Stub.asInterface(
                 ServiceManager.getService(Context.NETWORK_STATS_SERVICE));
         mPolicyManager = NetworkPolicyManager.from(context);
@@ -286,7 +286,7 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
 
         mPolicyEditor = new NetworkPolicyEditor(mPolicyManager);
         mPolicyEditor.read();
-
+/*
         try {
             if (!mNetworkService.isBandwidthControlEnabled()) {
                 Log.w(TAG, "No bandwidth control; leaving");
@@ -296,6 +296,8 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
             Log.w(TAG, "No bandwidth control; leaving");
             getActivity().finish();
         }
+*/
+        getActivity().finish();
 
         try {
             mStatsSession = mStatsService.openSession();
@@ -1009,12 +1011,15 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
     }
 
     private boolean isBandwidthControlEnabled() {
+/*
         try {
             return mNetworkService.isBandwidthControlEnabled();
         } catch (RemoteException e) {
             Log.w(TAG, "problem talking with INetworkManagementService: " + e);
             return false;
         }
+*/
+        return false;
     }
 
     public void setRestrictBackground(boolean restrictBackground) {
