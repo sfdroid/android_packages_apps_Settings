@@ -36,7 +36,7 @@ import android.content.res.Resources;
 import android.net.NetworkUtils;
 import android.net.wifi.IWifiManager;
 import android.net.wifi.WifiInfo;
-import android.hardware.usb.IUsbManager;
+//import android.hardware.usb.IUsbManager;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
@@ -50,7 +50,7 @@ import android.os.StrictMode;
 import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.hardware.usb.UsbManager;
+//import android.hardware.usb.UsbManager;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -194,7 +194,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private DevicePolicyManager mDpm;
     private UserManager mUm;
     private WifiManager mWifiManager;
-    private UsbManager mUsbManager;
+//    private UsbManager mUsbManager;
 
     private SwitchBar mSwitchBar;
     private boolean mLastEnabledState;
@@ -297,7 +297,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
 
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
-        mUsbManager = (UsbManager)getActivity().getSystemService(Context.USB_SERVICE);
+//        mUsbManager = (UsbManager)getActivity().getSystemService(Context.USB_SERVICE);
 
         if (android.os.Process.myUserHandle().getIdentifier() != UserHandle.USER_OWNER
                 || mUm.hasUserRestriction(UserManager.DISALLOW_DEBUGGING_FEATURES)
@@ -459,11 +459,13 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         if (pref == null) {
             throw new IllegalArgumentException("Cannot find preference with key = " + key);
         }
+/*
         if (key == ENABLE_ADB &&
                 UsbManager.USB_FUNCTION_CHARGING.equals(mUsbManager.getDefaultFunction())) {
             pref.setSummary(getResources().getString(R.string.enable_adb_summary_charging));
             disableForUser(pref);
         }
+*/
         mAllPrefs.add(pref);
         mResetSwitchPrefs.add(pref);
         return pref;
@@ -1873,6 +1875,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             }
         } else if (dialog == mAdbKeysDialog) {
             if (which == DialogInterface.BUTTON_POSITIVE) {
+/*
                 try {
                     IBinder b = ServiceManager.getService(Context.USB_SERVICE);
                     IUsbManager service = IUsbManager.Stub.asInterface(b);
@@ -1880,6 +1883,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
                 } catch (RemoteException e) {
                     Log.e(TAG, "Unable to clear adb keys", e);
                 }
+*/
             }
         } else if (dialog == mEnableDialog) {
             if (which == DialogInterface.BUTTON_POSITIVE) {
