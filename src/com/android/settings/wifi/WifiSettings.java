@@ -237,6 +237,8 @@ public class WifiSettings extends RestrictedSettingsFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
 
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
